@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# npx test
+# npx lint-staged
+
+# yarn tsc # for typescript
+yarn lint-staged # run lint-staged

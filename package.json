@@ -1,0 +1,69 @@
+{
+  "name": "ten-challenges",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cm": "git commit -m 'Running commitlint now ...'",
+    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|scss|md|pug|vue|log)\"",
+    "lint": "eslint . --ext .js,.jsx --ignore-path .eslintignore",
+    "lint:fix": "eslint . --fix --ext .js,.jsx, --ignore-path .eslintignore",
+    "prettier:check": "npx prettier --check .",
+    "prettier:fix": "npx prettier --write .",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "*.{css,less,scss,html,json,jsx,js}": [
+      "prettier --write ."
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
+    "@faker-js/faker": "^6.3.1",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-html": "^6.2.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.1.5",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "husky": "^7.0.0",
+    "lint-staged": "^12.4.0",
+    "prettier": "^2.6.2"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}

@@ -1,0 +1,12 @@
+# Ignore artifacts:
+package-lock.json
+build
+coverage
+dist
+public
+
+# Ignore shell scripts
+*.bash
+*.sh
+
+prepare-commit-msg
