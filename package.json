@@ -11,7 +11,7 @@
     "prettier:check": "npx prettier --check .",
     "prettier:fix": "npx prettier --write .",
     "prepare": "husky install",
-    "start": "nodemon src/app",
+    "start": "nodemon src/index",
     "test": "jest --watch"
   },
   "keywords": [],
