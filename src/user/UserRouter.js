@@ -3,14 +3,17 @@ const UserService = require('./UserService');
 
 const router = express.Router();
 
-router.post('/api/1.0/users', async (req, res) => {
+const validateUserName = (req, res, next) => {
   const user = req.body;
   if (user.username === null) {
     return res
       .status(400)
       .send({ validationErrors: { username: 'Username cannot be null' } });
   }
+  next();
+};
 
+router.post('/api/1.0/users', validateUserName, async (req, res) => {
   await UserService.save(req.body);
   return res.send({ message: 'User created' });
 });
