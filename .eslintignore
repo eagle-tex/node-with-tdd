@@ -1,6 +1,5 @@
 .cache/
 build/
-config/
 coverage/
 dist/
 dotenv/
