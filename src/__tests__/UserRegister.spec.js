@@ -103,6 +103,8 @@ describe('User Registration', () => {
       password: 'P4ssword'
     });
     const body = response.body;
-    expect(Object.keys(body.validationErrors)).toEqual(['username', 'email']);
+    expect(Object.keys(body.validationErrors)).toEqual(
+      expect.arrayContaining(['username', 'email'])
+    );
   });
 });
