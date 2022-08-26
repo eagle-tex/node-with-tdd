@@ -5,7 +5,8 @@ const Sequelize = require('sequelize');
 // param3: database password    param4: object
 const sequelize = new Sequelize('hoaxify', 'my-db-user', 'db-p4ss', {
   dialect: 'sqlite',
-  storage: './database.sqlite'
+  storage: './database.sqlite',
+  logging: false
 });
 
 module.exports = sequelize;
