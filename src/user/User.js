@@ -11,8 +11,9 @@ User.init(
       type: Sequelize.STRING
     },
     email: {
-      type: Sequelize.STRING,
-      unique: true
+      type: Sequelize.STRING
+      // NOTE: constraint below not necessary anymore but you can try to put it back in
+      // unique: true
     },
     password: {
       type: Sequelize.STRING
