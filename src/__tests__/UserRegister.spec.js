@@ -98,6 +98,13 @@ describe('User Registration', () => {
     ${'email'}    | ${'user.mail.com'} | ${'E-mail is not valid'}
     ${'email'}    | ${'user@mail'}     | ${'E-mail is not valid'}
     ${'password'} | ${null}            | ${'Password cannot be null'}
+    ${'password'} | ${'P4ssw'}         | ${'Password must be at least 6 characters'}
+    ${'password'} | ${'alllowercase'}  | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'ALLUPPERCASE'}  | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'1234567890'}    | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'lowerandUPPER'} | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'lower4nd5667'}  | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'UPPER44444'}    | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
   `(
     'returns "$expectedMessage" when $field is $value',
     async ({ field, expectedMessage, value }) => {
