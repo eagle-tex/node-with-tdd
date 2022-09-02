@@ -39,7 +39,7 @@ router.post(
     if (!errors.isEmpty()) {
       const validationErrors = {};
       errors.array().forEach((error) => {
-        return (validationErrors[error.param] = error.msg);
+        return (validationErrors[error.param] = req.t(error.msg));
       });
       return res.status(400).send({ validationErrors });
     }
