@@ -1,0 +1,10 @@
+{
+  "username_null": "Le nom d'utilisateur ne peut pas être vide",
+  "username_size": "Doit avoir minimum 4 et maximum 32 lettres",
+  "email_null": "L'e-mail ne peut pas être vide",
+  "email_invalid": "E-mail invalide",
+  "password_null": "Le mot de passe ne peut pas être vide",
+  "password_size": "Le mot de passe doit avoir au moins 6 lettres",
+  "password_pattern": "Le mot de passe doit avoir au moins 1 minuscule, 1 majuscule et 1 chiffre",
+  "email_in_use": "Cet e-mail est déjà utilisé"
+}
