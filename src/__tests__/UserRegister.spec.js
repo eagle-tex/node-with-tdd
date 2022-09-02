@@ -150,3 +150,53 @@ describe('User Registration', () => {
     );
   });
 });
+
+describe('Internationalization', () => {
+  const username_null = "Le nom d'utilisateur ne peut pas être vide";
+  const username_size = 'Doit avoir minimum 4 et maximum 32 lettres';
+  const email_null = "L'e-mail ne peut pas être vide";
+  const email_invalid = 'E-mail invalide';
+  const password_null = 'Le mot de passe ne peut pas être vide';
+  const password_size = 'Le mot de passe doit avoir au moins 6 lettres';
+  const password_pattern =
+    'Le mot de passe doit avoir au moins 1 minuscule, 1 majuscule et 1 chiffre';
+  const email_in_use = 'E-mail already in use';
+
+  it.each`
+    field         | value              | expectedMessage
+    ${'username'} | ${null}            | ${username_null}
+    ${'username'} | ${'usr'}           | ${username_size}
+    ${'username'} | ${'a'.repeat(33)}  | ${username_size}
+    ${'email'}    | ${null}            | ${email_null}
+    ${'email'}    | ${'mail.com'}      | ${email_invalid}
+    ${'email'}    | ${'user.mail.com'} | ${email_invalid}
+    ${'email'}    | ${'user@mail'}     | ${email_invalid}
+    ${'password'} | ${null}            | ${password_null}
+    ${'password'} | ${'P4ssw'}         | ${password_size}
+    ${'password'} | ${'alllowercase'}  | ${password_pattern}
+    ${'password'} | ${'ALLUPPERCASE'}  | ${password_pattern}
+    ${'password'} | ${'1234567890'}    | ${password_pattern}
+    ${'password'} | ${'lowerandUPPER'} | ${password_pattern}
+    ${'password'} | ${'lower4nd5667'}  | ${password_pattern}
+    ${'password'} | ${'UPPER44444'}    | ${password_pattern}
+  `(
+    'returns "$expectedMessage" when $field is $value when language is set to French',
+    async ({ field, expectedMessage, value }) => {
+      const user = {
+        username: 'user1',
+        email: 'user1@mail.com',
+        password: 'P4ssword'
+      };
+      user[field] = value;
+      const response = await postUser(user);
+      const body = response.body;
+      expect(body.validationErrors[field]).toBe(expectedMessage);
+    }
+  );
+
+  it(`returns ${email_in_use} when same email is already in use when language is set to French`, async () => {
+    await User.create({ ...validUser });
+    const response = await postUser();
+    expect(response.body.validationErrors.email).toBe(email_in_use);
+  });
+});
