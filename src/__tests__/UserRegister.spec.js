@@ -152,6 +152,13 @@ describe('User Registration', () => {
 });
 
 describe('Internationalization', () => {
+  const postUser = (user = validUser) => {
+    return request(app)
+      .post('/api/1.0/users')
+      .set('Accept-Language', 'fr')
+      .send(user);
+  };
+
   const username_null = "Le nom d'utilisateur ne peut pas être vide";
   const username_size = 'Doit avoir minimum 4 et maximum 32 lettres';
   const email_null = "L'e-mail ne peut pas être vide";
@@ -160,7 +167,7 @@ describe('Internationalization', () => {
   const password_size = 'Le mot de passe doit avoir au moins 6 lettres';
   const password_pattern =
     'Le mot de passe doit avoir au moins 1 minuscule, 1 majuscule et 1 chiffre';
-  const email_in_use = 'E-mail already in use';
+  const email_in_use = 'Cet e-mail est déjà utilisé';
 
   it.each`
     field         | value              | expectedMessage
