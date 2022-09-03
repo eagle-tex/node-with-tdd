@@ -1,0 +1,7 @@
+[codespell]
+count =
+ignore-words-list = mot
+quiet-level = 3
+skip = node_modules/*
+summary =
+
