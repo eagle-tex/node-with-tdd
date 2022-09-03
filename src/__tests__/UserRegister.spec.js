@@ -2,8 +2,6 @@ const request = require('supertest');
 const app = require('../app');
 const User = require('../user/User');
 const sequelize = require('../config/database');
-// const nodemailerStub = require('nodemailer-stub');
-const EmailService = require('../email/EmailService');
 const SMTPServer = require('smtp-server').SMTPServer;
 
 let lastMail = null;
@@ -218,30 +216,24 @@ describe('User Registration', () => {
   });
 
   it('returns 502 Bad Gateway when sendind email fails', async () => {
-    const mockSendAccountActivation = jest
-      .spyOn(EmailService, 'sendAccountActivation')
-      .mockRejectedValue({ message: 'Failed to deliver email' });
+    simulateSmtpFailure = true;
     const response = await postUser();
+
     expect(response.status).toBe(502);
-    mockSendAccountActivation.mockRestore();
   });
 
   it('returns Email failure message when sendind email fails', async () => {
-    const mockSendAccountActivation = jest
-      .spyOn(EmailService, 'sendAccountActivation')
-      .mockRejectedValue({ message: 'Failed to deliver email' });
+    simulateSmtpFailure = true;
     const response = await postUser();
-    mockSendAccountActivation.mockRestore();
+
     expect(response.body.message).toBe(email_failure);
   });
 
   it('does not save user to database if activation email fails', async () => {
-    const mockSendAccountActivation = jest
-      .spyOn(EmailService, 'sendAccountActivation')
-      .mockRejectedValue({ message: 'Failed to deliver email' });
+    simulateSmtpFailure = true;
     await postUser();
-    mockSendAccountActivation.mockRestore();
     const users = await User.findAll();
+
     expect(users.length).toBe(0);
   });
 });
@@ -303,11 +295,9 @@ describe('Internationalization', () => {
   });
 
   it(`returns "${email_failure}" message when sendind email fails and language is set to French`, async () => {
-    const mockSendAccountActivation = jest
-      .spyOn(EmailService, 'sendAccountActivation')
-      .mockRejectedValue({ message: 'Failed to deliver email' });
+    simulateSmtpFailure = true;
     const response = await postUser({ ...validUser }, { language: 'fr' });
-    mockSendAccountActivation.mockRestore();
+
     expect(response.body.message).toBe(email_failure);
   });
 });
