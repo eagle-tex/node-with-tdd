@@ -103,6 +103,7 @@ describe('User Registration', () => {
   const password_pattern =
     'Password must have at least 1 uppercase, 1 lowercase letter and 1 number';
   const email_in_use = 'E-mail already in use';
+  const email_failure = 'E-mail failure';
 
   it.each`
     field         | value              | expectedMessage
@@ -199,13 +200,13 @@ describe('User Registration', () => {
     mockSendAccountActivation.mockRestore();
   });
 
-  it('returns Email failure messsage when sendind email fails', async () => {
+  it('returns Email failure message when sendind email fails', async () => {
     const mockSendAccountActivation = jest
       .spyOn(EmailService, 'sendAccountActivation')
       .mockRejectedValue({ message: 'Failed to deliver email' });
     const response = await postUser();
     mockSendAccountActivation.mockRestore();
-    expect(response.body.message).toBe('E-mail failure');
+    expect(response.body.message).toBe(email_failure);
   });
 });
 
@@ -220,6 +221,7 @@ describe('Internationalization', () => {
     'Le mot de passe doit avoir au moins 1 minuscule, 1 majuscule et 1 chiffre';
   const email_in_use = 'Cet e-mail est déjà utilisé';
   const user_create_success = 'Utilisateur créé';
+  const email_failure = "Echec d'email";
 
   it.each`
     field         | value              | expectedMessage
@@ -262,5 +264,14 @@ describe('Internationalization', () => {
   it(`returns success message "${user_create_success}" when signup request is valid & language is French`, async () => {
     const response = await postUser({ ...validUser }, { language: 'fr' });
     expect(response.body.message).toBe(user_create_success);
+  });
+
+  it(`returns "${email_failure}" message when sendind email fails and language is set to French`, async () => {
+    const mockSendAccountActivation = jest
+      .spyOn(EmailService, 'sendAccountActivation')
+      .mockRejectedValue({ message: 'Failed to deliver email' });
+    const response = await postUser({ ...validUser }, { language: 'fr' });
+    mockSendAccountActivation.mockRestore();
+    expect(response.body.message).toBe(email_failure);
   });
 });
