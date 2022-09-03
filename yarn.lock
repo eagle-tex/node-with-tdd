@@ -4566,11 +4566,6 @@ node-releases@^2.0.6:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.6.tgz#8a7088c63a55e493845683ebf3c828d8c51c5503"
   integrity sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==
 
-nodemailer-stub@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/nodemailer-stub/-/nodemailer-stub-1.2.2.tgz#034fba2fc8233017853ca9614deaf4ccecb7050f"
-  integrity sha512-K4BKUExW3gR+94PVH2fWanH3YyPGPL7NTgqQMfcNi+WC13B44AIuk0HTBu7oS/WV2Rn1RSEAgxB9ZhYB8b+0dw==
-
 nodemailer@6.7.3:
   version "6.7.3"
   resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.7.3.tgz#b73f9a81b9c8fa8acb4ea14b608f5e725ea8e018"
