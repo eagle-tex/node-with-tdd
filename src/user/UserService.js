@@ -32,6 +32,8 @@ const save = async (body) => {
   } catch (err) {
     // if transaction fails, roll it back
     await transaction.rollback();
+    // throw the error nonetheless
+    throw new Error(err);
   }
 };
 
