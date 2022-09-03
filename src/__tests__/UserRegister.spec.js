@@ -153,6 +153,13 @@ describe('User Registration', () => {
       expect.arrayContaining(['username', 'email'])
     );
   });
+
+  it('creates user in inactive mode', async () => {
+    await postUser();
+    const users = await User.findAll();
+    const savedUser = users[0];
+    expect(savedUser.inactive).toBe(true);
+  });
 });
 
 describe('Internationalization', () => {
