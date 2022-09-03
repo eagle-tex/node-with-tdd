@@ -35,6 +35,10 @@ beforeEach(() => {
   return User.destroy({ truncate: true });
 });
 
+afterAll(async () => {
+  await server.close();
+});
+
 const validUser = {
   username: 'user1',
   email: 'user1@mail.com',
