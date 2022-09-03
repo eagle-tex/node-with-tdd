@@ -6,10 +6,27 @@ const sequelize = require('../config/database');
 const EmailService = require('../email/EmailService');
 const SMTPServer = require('smtp-server').SMTPServer;
 
-// we use return to wait for the asynchronous function (sequelize.sync())
-// to resolve before continuing
-beforeAll(() => {
-  return sequelize.sync();
+let lastMail = null;
+let server = null;
+
+beforeAll(async () => {
+  server = new SMTPServer({
+    authOptional: true,
+    onData(stream, _session, callback) {
+      let mailBody = null;
+      stream.on('data', (data) => {
+        mailBody += data.toString();
+      });
+      stream.on('end', () => {
+        lastMail = mailBody;
+        callback();
+      });
+    }
+  });
+
+  server.listen(8587, 'localhost'); // await ?
+
+  await sequelize.sync();
 });
 
 // we use return to wait for the asynchronous function (User.destroy())
@@ -181,27 +198,7 @@ describe('User Registration', () => {
   });
 
   it('sends an account activation email with activationToken', async () => {
-    let lastMail = null;
-    const server = new SMTPServer({
-      authOptional: true,
-      onData(stream, _session, callback) {
-        let mailBody = null;
-        stream.on('data', (data) => {
-          mailBody += data.toString();
-        });
-        stream.on('end', () => {
-          lastMail = mailBody;
-          callback();
-        });
-      }
-    });
-
-    server.listen(8587, 'localhost'); // await ?
-
     await postUser();
-
-    server.close(); // await ?
-
     const users = await User.findAll();
     const savedUser = users[0];
 
