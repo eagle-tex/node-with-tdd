@@ -160,6 +160,14 @@ describe('User Registration', () => {
     const savedUser = users[0];
     expect(savedUser.inactive).toBe(true);
   });
+
+  it('creates user in inactive mode even if request body contains inactive: false', async () => {
+    const newUser = { ...validUser, inactive: false };
+    await postUser(newUser);
+    const users = await User.findAll();
+    const savedUser = users[0];
+    expect(savedUser.inactive).toBe(true);
+  });
 });
 
 describe('Internationalization', () => {
