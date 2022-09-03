@@ -38,6 +38,7 @@ beforeAll(async () => {
 // we use return to wait for the asynchronous function (User.destroy())
 // to resolve before continuing
 beforeEach(() => {
+  simulateSmtpFailure = false;
   return User.destroy({ truncate: true });
 });
 
