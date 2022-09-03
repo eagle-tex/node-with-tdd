@@ -21,6 +21,9 @@ User.init(
     inactive: {
       type: Sequelize.BOOLEAN,
       defaultValue: true
+    },
+    activationToken: {
+      type: Sequelize.BOOLEAN
     }
   },
   {
