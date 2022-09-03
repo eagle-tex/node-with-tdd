@@ -198,6 +198,15 @@ describe('User Registration', () => {
     expect(response.status).toBe(502);
     mockSendAccountActivation.mockRestore();
   });
+
+  it('returns Email failure messsage when sendind email fails', async () => {
+    const mockSendAccountActivation = jest
+      .spyOn(EmailService, 'sendAccountActivation')
+      .mockRejectedValue({ message: 'Failed to deliver email' });
+    const response = await postUser();
+    mockSendAccountActivation.mockRestore();
+    expect(response.body.message).toBe('E-mail failure');
+  });
 });
 
 describe('Internationalization', () => {
