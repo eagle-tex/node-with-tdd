@@ -7,5 +7,6 @@
   "password_size": "Le mot de passe doit avoir au moins 6 lettres",
   "password_pattern": "Le mot de passe doit avoir au moins 1 minuscule, 1 majuscule et 1 chiffre",
   "email_in_use": "Cet e-mail est déjà utilisé",
-  "user_create_success": "Utilisateur créé"
+  "user_create_success": "Utilisateur créé",
+  "email_failure": "Echec d'email"
 }
