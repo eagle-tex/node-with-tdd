@@ -21,8 +21,12 @@ const validUser = {
   password: 'P4ssword'
 };
 
-const postUser = (user = validUser) => {
-  return request(app).post('/api/1.0/users').send(user);
+const postUser = (user = validUser, options = {}) => {
+  const agent = request(app).post('/api/1.0/users');
+  if (options.language) {
+    agent.set('Accept-Language', options.language);
+  }
+  return agent.send(user);
 };
 
 describe('User Registration', () => {
@@ -152,13 +156,6 @@ describe('User Registration', () => {
 });
 
 describe('Internationalization', () => {
-  const postUser = (user = validUser) => {
-    return request(app)
-      .post('/api/1.0/users')
-      .set('Accept-Language', 'fr')
-      .send(user);
-  };
-
   const username_null = "Le nom d'utilisateur ne peut pas être vide";
   const username_size = 'Doit avoir minimum 4 et maximum 32 lettres';
   const email_null = "L'e-mail ne peut pas être vide";
@@ -168,6 +165,7 @@ describe('Internationalization', () => {
   const password_pattern =
     'Le mot de passe doit avoir au moins 1 minuscule, 1 majuscule et 1 chiffre';
   const email_in_use = 'Cet e-mail est déjà utilisé';
+  const user_create_success = 'Utilisateur créé';
 
   it.each`
     field         | value              | expectedMessage
@@ -195,7 +193,7 @@ describe('Internationalization', () => {
         password: 'P4ssword'
       };
       user[field] = value;
-      const response = await postUser(user);
+      const response = await postUser(user, { language: 'fr' });
       const body = response.body;
       expect(body.validationErrors[field]).toBe(expectedMessage);
     }
@@ -203,7 +201,12 @@ describe('Internationalization', () => {
 
   it(`returns ${email_in_use} when same email is already in use when language is set to French`, async () => {
     await User.create({ ...validUser });
-    const response = await postUser();
+    const response = await postUser({ ...validUser }, { language: 'fr' });
     expect(response.body.validationErrors.email).toBe(email_in_use);
+  });
+
+  it(`returns success message "${user_create_success}" when signup request is valid & language is French`, async () => {
+    const response = await postUser({ ...validUser }, { language: 'fr' });
+    expect(response.body.message).toBe(user_create_success);
   });
 });
