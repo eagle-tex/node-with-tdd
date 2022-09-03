@@ -179,7 +179,7 @@ describe('User Registration', () => {
     expect(savedUser.activationToken).toBeTruthy();
   });
 
-  it('sends an account activation email with activationToken', async () => {
+  fit('sends an account activation email with activationToken', async () => {
     await postUser();
     const lastMail = nodemailerStub.interactsWithMail.lastMail();
     expect(lastMail.to).toContain(validUser.email);
