@@ -8,6 +8,7 @@ const SMTPServer = require('smtp-server').SMTPServer;
 
 let lastMail = null;
 let server = null;
+let simulateSmtpFailure = false;
 
 beforeAll(async () => {
   server = new SMTPServer({
@@ -18,6 +19,11 @@ beforeAll(async () => {
         mailBody += data.toString();
       });
       stream.on('end', () => {
+        if (simulateSmtpFailure) {
+          const err = new Error('Invalid mailbox');
+          err.responseCode = 553;
+          return callback(err);
+        }
         lastMail = mailBody;
         callback();
       });
