@@ -3,6 +3,7 @@ const app = require('../app');
 const User = require('../user/User');
 const sequelize = require('../config/database');
 const nodemailerStub = require('nodemailer-stub');
+const EmailService = require('../email/EmailService');
 
 // we use return to wait for the asynchronous function (sequelize.sync())
 // to resolve before continuing
@@ -187,6 +188,14 @@ describe('User Registration', () => {
     const users = await User.findAll();
     const savedUser = users[0];
     expect(lastMail.content).toContain(savedUser.activationToken);
+  });
+
+  it('returns 502 Bad Gateway when sendind email fails', async () => {
+    jest
+      .spyOn(EmailService, 'sendAccountActivation')
+      .mockRejectedValue({ message: 'Failed to deliver email' });
+    const response = await postUser();
+    expect(response.status).toBe(502);
   });
 });
 
