@@ -10,5 +10,6 @@
   "user_create_success": "Utilisateur créé",
   "email_failure": "Echec d'email",
   "account_activation_failure": "Cet compte est soit actif ou le jeton est invalide",
-  "account_activation_success": "Le compte est activé"
+  "account_activation_success": "Le compte est activé",
+  "validation_failure": "Echec de validation"
 }
