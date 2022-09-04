@@ -388,6 +388,16 @@ describe('Account activation', () => {
 
 describe('Error Model', () => {
   it('returns path, timestamp, message and validationErrors in response on validation failure', async () => {
-    //
+    const response = await postUser({ ...validUser, username: null });
+    const body = response.body;
+
+    expect(Object.keys(body)).toEqual(
+      expect.arrayContaining([
+        'path',
+        'timestamp',
+        'message',
+        'validationErrors'
+      ])
+    );
   });
 });
