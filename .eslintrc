@@ -18,6 +18,14 @@
   // "ignorePatterns": [".prettierrc.js", ".stylelintrc.js"],
   "rules": {
     "eqeqeq": "warn",
+    // https://github.com/wesbos/eslint-config-wesbos/blob/master/.eslintrc.js
+    "no-unused-vars": [
+      1,
+      {
+        "ignoreRestSiblings": true,
+        "argsIgnorePattern": "res|next|^err"
+      }
+    ],
     "prettier/prettier": "warn" // warn for prettier errors
   }
 }
