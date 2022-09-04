@@ -9,5 +9,6 @@
   "email_in_use": "Cet e-mail est déjà utilisé",
   "user_create_success": "Utilisateur créé",
   "email_failure": "Echec d'email",
-  "account_activation_failure": "Cet compte est soit actif ou le jeton est invalide"
+  "account_activation_failure": "Cet compte est soit actif ou le jeton est invalide",
+  "account_activation_success": "Le compte est activé"
 }
