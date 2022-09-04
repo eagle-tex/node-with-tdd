@@ -236,6 +236,11 @@ describe('User Registration', () => {
 
     expect(users.length).toBe(0);
   });
+
+  it('returns "Validation failure" message in error response body when validation fails', async () => {
+    const response = await postUser({ ...validUser, username: null });
+    expect(response.body.message).toBe('Validation failure');
+  });
 });
 
 describe('Internationalization', () => {
@@ -250,6 +255,7 @@ describe('Internationalization', () => {
   const email_in_use = 'Cet e-mail est déjà utilisé';
   const user_create_success = 'Utilisateur créé';
   const email_failure = "Echec d'email";
+  const validation_failure = 'Echec de validation';
 
   it.each`
     field         | value              | expectedMessage
@@ -299,6 +305,14 @@ describe('Internationalization', () => {
     const response = await postUser({ ...validUser }, { language: 'fr' });
 
     expect(response.body.message).toBe(email_failure);
+  });
+
+  it(`returns ${validation_failure} message in error response body when validation fails and language is French`, async () => {
+    const response = await postUser(
+      { ...validUser, username: null },
+      { language: 'fr' }
+    );
+    expect(response.body.message).toBe(validation_failure);
   });
 });
 
@@ -370,4 +384,10 @@ describe('Account activation', () => {
       expect(response.body.message).toBe(message);
     }
   );
+});
+
+describe('Error Model', () => {
+  it('returns path, timestamp, message and validationErrors in response on validation failure', async () => {
+    //
+  });
 });
