@@ -10,7 +10,7 @@ module.exports = (err, req, res, _next) => {
   }
 
   res.status(status).send({
-    path: '',
+    path: req.originalUrl,
     timestamp: '',
     message: req.t(message),
     validationErrors
