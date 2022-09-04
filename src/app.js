@@ -25,6 +25,12 @@ const app = express();
 app.use(middleware.handle(i18next));
 
 app.use(express.json());
+
 app.use(UserRouter);
+
+app.use((err, req, res, _next) => {
+  const { status, message } = err;
+  res.status(status).send({ message: req.t(message) });
+});
 
 module.exports = app;
