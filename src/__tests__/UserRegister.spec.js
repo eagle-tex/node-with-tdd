@@ -347,14 +347,20 @@ describe('Account activation', () => {
   });
 
   it.each`
-    language | message
-    ${'en'}  | ${'This account is either active or the token is invalid'}
-    ${'fr'}  | ${'Cet compte est soit actif ou le jeton est invalide'}
+    language | tokenStatus  | message
+    ${'en'}  | ${'wrong'}   | ${'This account is either active or the token is invalid'}
+    ${'fr'}  | ${'wrong'}   | ${'Cet compte est soit actif ou le jeton est invalide'}
+    ${'en'}  | ${'correct'} | ${'Account is activated'}
+    ${'fr'}  | ${'correct'} | ${'Le compte est activé'}
   `(
-    `returns "$message" when wrong token is sent and language is $language`,
-    async ({ language, message }) => {
+    `returns "$message" when token is $tokenStatus and language is $language`,
+    async ({ language, tokenStatus, message }) => {
       await postUser();
-      const token = 'this-token-does-not-exist';
+      let token = 'this-token-does-not-exist';
+      if (tokenStatus === 'correct') {
+        const users = await User.findAll();
+        token = users[0].activationToken;
+      }
 
       const response = await request(app)
         .post(`/api/1.0/users/token/${token}`)
