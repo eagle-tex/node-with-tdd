@@ -345,4 +345,23 @@ describe('Account activation', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it.each`
+    language | message
+    ${'en'}  | ${'This account is either active or the token is invalid'}
+    ${'fr'}  | ${'Cet compte est soit actif ou le jeton est invalide'}
+  `(
+    `returns "$message" when wrong token is sent and language is $language`,
+    async ({ language, message }) => {
+      await postUser();
+      const token = 'this-token-does-not-exist';
+
+      const response = await request(app)
+        .post(`/api/1.0/users/token/${token}`)
+        .set('Accept-Language', language)
+        .send();
+
+      expect(response.body.message).toBe(message);
+    }
+  );
 });
