@@ -403,11 +403,9 @@ describe('Error Model', () => {
 
   it('returns path, timestamp and message in response body when request fails w/o validation errors', async () => {
     const token = 'this-token-does-not-exist';
-
     const response = await request(app)
       .post(`/api/1.0/users/token/${token}`)
       .send();
-
     const body = response.body;
 
     expect(Object.keys(body)).toEqual(
@@ -417,11 +415,9 @@ describe('Error Model', () => {
 
   it('returns path in error body', async () => {
     const token = 'this-token-does-not-exist';
-
     const response = await request(app)
       .post(`/api/1.0/users/token/${token}`)
       .send();
-
     const body = response.body;
 
     expect(body.path).toEqual(`/api/1.0/users/token/${token}`);
