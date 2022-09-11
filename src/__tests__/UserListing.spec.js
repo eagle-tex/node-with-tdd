@@ -70,7 +70,7 @@ describe('Listing Users', () => {
     expect(response.body.totalPages).toBe(2);
   });
 
-  fit('returns second page users and page indicator when page is set as 1 in request parameter', async () => {
+  it('returns second page users and page indicator when page is set as 1 in request parameter', async () => {
     await addUsers(11);
     const response = await request(app)
       .get('/api/1.0/users')
