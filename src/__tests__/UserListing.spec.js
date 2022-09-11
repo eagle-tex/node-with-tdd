@@ -72,13 +72,18 @@ describe('Listing Users', () => {
 
   it('returns second page users and page indicator when page is set as 1 in request parameter', async () => {
     await addUsers(11);
-    const response = await request(app)
-      .get('/api/1.0/users')
-      .query({ page: 1 });
+    const response = await getUsers().query({ page: 1 });
     // alternative way of querying 'page 1'
     // const response = await request(app).get('/api/1.0/users?page=1');
 
     expect(response.body.content[0].username).toBe('user11');
     expect(response.body.page).toBe(1);
+  });
+
+  it('returns first page users when page is below 0 in request parameter', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ page: -5 });
+
+    expect(response.body.page).toBe(0);
   });
 });
