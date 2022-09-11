@@ -15,11 +15,13 @@ const getUsers = () => {
   return request(app).get('/api/1.0/users');
 };
 
-const addUsers = async (count) => {
-  for (let i = 0; i < count; i++) {
+const addUsers = async (activeUserCount, inactiveUserCount = 0) => {
+  console.log(activeUserCount + inactiveUserCount);
+  for (let i = 0; i < activeUserCount + inactiveUserCount; i++) {
     await User.create({
       username: `user${i + 1}`,
-      email: `user${i + 1}@mail.com`
+      email: `user${i + 1}@mail.com`,
+      inactive: i >= activeUserCount
     });
   }
 };
