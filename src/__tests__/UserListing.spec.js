@@ -48,4 +48,11 @@ describe('Listing Users', () => {
 
     expect(response.body.content.length).toBe(10);
   });
+
+  it('returns 6 users in page content when there are 6 active users and 5 inactive users in database', async () => {
+    await addUsers(6, 5);
+    const response = await getUsers();
+
+    expect(response.body.content.length).toBe(6);
+  });
 });
