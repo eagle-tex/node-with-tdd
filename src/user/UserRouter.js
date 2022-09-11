@@ -59,8 +59,8 @@ router.post('/api/1.0/users/token/:token', async (req, res, next) => {
   }
 });
 
-router.get('/api/1.0/users', async (_req, res) => {
-  const users = await UserService.getUsers();
+router.get('/api/1.0/users', async (req, res) => {
+  const users = await UserService.getUsers(req.query.page);
   res.send(users);
 });
 
