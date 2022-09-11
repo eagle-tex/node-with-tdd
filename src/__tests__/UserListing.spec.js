@@ -1,5 +1,15 @@
 const request = require('supertest');
 const app = require('../app');
+const User = require('../user/User');
+const sequelize = require('../config/database');
+
+beforeAll(async () => {
+  await sequelize.sync();
+});
+
+beforeEach(() => {
+  return User.destroy({ truncate: true });
+});
 
 describe('Listing Users', () => {
   it('returns 200 OK when there are no user in database', async () => {
