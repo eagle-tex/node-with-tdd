@@ -56,6 +56,7 @@ const activate = async (token) => {
 const getUsers = async () => {
   const users = await User.findAll({
     where: { inactive: false },
+    attributes: ['id', 'username', 'email'],
     limit: 10
   });
 
