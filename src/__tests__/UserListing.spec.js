@@ -26,4 +26,17 @@ describe('Listing Users', () => {
       totalPages: 0
     });
   });
+
+  it('returns 10 users in page content when there all 11 users in database', async () => {
+    for (let i = 0; i < 11; i++) {
+      await User.create({
+        username: `user${i + 1}`,
+        email: `user${i + 1}@mail.com`
+      });
+    }
+
+    const response = await request(app).get('/api/1.0/users');
+
+    expect(response.body.content.length).toBe(10);
+  });
 });
