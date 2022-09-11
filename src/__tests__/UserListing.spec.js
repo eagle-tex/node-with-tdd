@@ -16,7 +16,6 @@ const getUsers = () => {
 };
 
 const addUsers = async (activeUserCount, inactiveUserCount = 0) => {
-  console.log(activeUserCount + inactiveUserCount);
   for (let i = 0; i < activeUserCount + inactiveUserCount; i++) {
     await User.create({
       username: `user${i + 1}`,
@@ -54,5 +53,13 @@ describe('Listing Users', () => {
     const response = await getUsers();
 
     expect(response.body.content.length).toBe(6);
+  });
+
+  it('returns only id, username and email in content array for each user', async () => {
+    await addUsers(11);
+    const response = await getUsers();
+    const user = response.body.content[0];
+
+    expect(Object.keys(user)).toEqual(['id', 'username', 'email']);
   });
 });
