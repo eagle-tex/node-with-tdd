@@ -141,4 +141,14 @@ describe('Get User', () => {
       expect(response.body.message).toBe(message);
     }
   );
+
+  it('returns proper error body when user not found', async () => {
+    const nowInMillis = new Date().getTime();
+    const response = await request(app).get('/api/1.0/users/5');
+    const error = response.body;
+
+    expect(error.path).toBe('/api/1.0/users/5');
+    expect(error.timestamp).toBeGreaterThan(nowInMillis);
+    expect(Object.keys(error)).toEqual(['path', 'timestamp', 'message']);
+  });
 });
