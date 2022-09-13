@@ -3,6 +3,7 @@ const UserService = require('./UserService');
 const { check, validationResult } = require('express-validator');
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
+const UserNotFoundException = require('./UserNotFoundException');
 
 const router = express.Router();
 
@@ -66,8 +67,10 @@ router.get('/api/1.0/users', pagination, async (req, res) => {
   res.send(users);
 });
 
-router.get('/api/1.0/users/:id', (req, res) => {
-  res.status(404).send({ message: req.t('user_not_found') });
+router.get('/api/1.0/users/:id', (_req, _res) => {
+  // NOTE: we DO NOT need to use `next(err)` because we're not in an async function
+  // we can throw the exception directly here
+  throw new UserNotFoundException();
 });
 
 module.exports = router;
