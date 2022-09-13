@@ -1,6 +1,6 @@
 module.exports = (err, req, res, _next) => {
   const { status, message, errors } = err;
-  let validationErrors = null;
+  let validationErrors;
 
   if (errors) {
     validationErrors = {};
