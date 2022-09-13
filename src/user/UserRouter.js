@@ -60,12 +60,15 @@ router.post('/api/1.0/users/token/:token', async (req, res, next) => {
 });
 
 router.get('/api/1.0/users', async (req, res) => {
-  let page = req.query.page ? Number.parseInt(req.query.page) : 0;
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+
+  let page = Number.isNaN(pageAsNumber) ? 0 : pageAsNumber;
   if (page < 0) {
     page = 0;
   }
 
-  let size = req.query.size ? Number.parseInt(req.query.size) : 10;
+  let size = Number.isNaN(sizeAsNumber) ? 10 : sizeAsNumber;
   if (size > 10 || size < 1) {
     size = 10;
   }
