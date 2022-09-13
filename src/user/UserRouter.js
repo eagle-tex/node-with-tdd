@@ -66,7 +66,7 @@ router.get('/api/1.0/users', async (req, res) => {
   }
 
   let size = req.query.size ? Number.parseInt(req.query.size) : 10;
-  if (size > 10) {
+  if (size > 10 || size < 1) {
     size = 10;
   }
 
