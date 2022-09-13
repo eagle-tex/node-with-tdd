@@ -3,7 +3,6 @@ const UserService = require('./UserService');
 const { check, validationResult } = require('express-validator');
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
-const UserNotFoundException = require('./UserNotFoundException');
 
 const router = express.Router();
 
@@ -69,8 +68,8 @@ router.get('/api/1.0/users', pagination, async (req, res) => {
 
 router.get('/api/1.0/users/:id', async (req, res, next) => {
   try {
-    await UserService.getUser(req.params.id);
-    res.send();
+    const user = await UserService.getUser(req.params.id);
+    res.send(user);
   } catch (err) {
     // NOTE: Now, we DO need to use `next(err)` because WE ARE in an async function
     // We HAVE TO to pass the error `err` to the next function
