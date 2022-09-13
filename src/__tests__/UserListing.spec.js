@@ -86,4 +86,12 @@ describe('Listing Users', () => {
 
     expect(response.body.page).toBe(0);
   });
+
+  it('returns 5 users and corresponding size indicator when size is set to 5 in request parameter', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ size: 5 });
+
+    expect(response.body.content.length).toBe(5);
+    expect(response.body.size).toBe(5);
+  });
 });
