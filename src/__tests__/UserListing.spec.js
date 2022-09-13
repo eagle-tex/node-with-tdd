@@ -102,4 +102,12 @@ describe('Listing Users', () => {
     expect(response.body.content.length).toBe(10);
     expect(response.body.size).toBe(10);
   });
+
+  it('returns 10 users and corresponding size indicator when size is set as 0', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ size: 0 });
+
+    expect(response.body.content.length).toBe(10);
+    expect(response.body.size).toBe(10);
+  });
 });
