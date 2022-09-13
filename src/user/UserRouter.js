@@ -67,10 +67,15 @@ router.get('/api/1.0/users', pagination, async (req, res) => {
   res.send(users);
 });
 
-router.get('/api/1.0/users/:id', (_req, _res) => {
-  // NOTE: we DO NOT need to use `next(err)` because we're not in an async function
-  // we can throw the exception directly here
-  throw new UserNotFoundException();
+router.get('/api/1.0/users/:id', async (req, res, next) => {
+  try {
+    await UserService.getUser(req.params.id);
+    res.send();
+  } catch (err) {
+    // NOTE: Now, we DO need to use `next(err)` because WE ARE in an async function
+    // We HAVE TO to pass the error `err` to the next function
+    next(err);
+  }
 });
 
 module.exports = router;
