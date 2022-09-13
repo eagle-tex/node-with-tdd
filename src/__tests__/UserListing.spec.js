@@ -119,3 +119,11 @@ describe('Listing Users', () => {
     expect(response.body.page).toBe(0);
   });
 });
+
+describe('Get User', () => {
+  it('returns 404 when user not found', async () => {
+    const response = await request(app).get('/api/1.0/users/5');
+
+    expect(response.status).toBe(404);
+  });
+});
