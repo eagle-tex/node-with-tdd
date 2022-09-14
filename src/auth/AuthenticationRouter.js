@@ -5,7 +5,7 @@ const { check, validationResult } = require('express-validator');
 
 const UserService = require('../user/UserService');
 const AuthenticationException = require('./AuthenticationException');
-const ForbiddenException = require('./ForbiddenException');
+const ForbiddenException = require('../error/ForbiddenException');
 
 router.post(
   '/api/1.0/auth',
