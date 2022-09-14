@@ -77,4 +77,8 @@ router.get('/api/1.0/users/:id', async (req, res, next) => {
   }
 });
 
+router.put('/api/1.0/users/:id', (req, res) => {
+  return res.status(403).send();
+});
+
 module.exports = router;
