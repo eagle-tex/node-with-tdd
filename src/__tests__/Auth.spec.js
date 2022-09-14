@@ -51,4 +51,13 @@ describe('Authentication', () => {
     expect(response.body.username).toBe(user.username);
     expect(Object.keys(response.body)).toEqual(['id', 'username']);
   });
+
+  it('returns 401 when user does not exist', async () => {
+    const response = await postAuthentication({
+      email: 'user1@mail.com',
+      password: 'P4ssword'
+    });
+
+    expect(response.status).toBe(401);
+  });
 });
