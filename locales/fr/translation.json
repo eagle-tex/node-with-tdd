@@ -12,5 +12,6 @@
   "account_activation_failure": "Cet compte est soit actif ou le jeton est invalide",
   "account_activation_success": "Le compte est activé",
   "validation_failure": "Echec de validation",
-  "user_not_found": "Utilisateur non trouvé"
+  "user_not_found": "Utilisateur non trouvé",
+  "authentication_failure": "Données de connexion incorrectes"
 }
