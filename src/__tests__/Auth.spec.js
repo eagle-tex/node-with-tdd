@@ -25,8 +25,13 @@ const addUser = async () => {
   return await User.create(user); // return the created user object
 };
 
-const postAuthentication = async (credentials) => {
-  return await request(app).post('/api/1.0/auth').send(credentials);
+const postAuthentication = async (credentials, options = {}) => {
+  let agent = request(app).post('/api/1.0/auth');
+  if (options.language) {
+    agent.set('Accept-Language', options.language);
+  }
+
+  return await agent.send(credentials);
 };
 
 describe('Authentication', () => {
@@ -73,4 +78,23 @@ describe('Authentication', () => {
     expect(error.timestamp).toBeGreaterThan(nowInMillis);
     expect(Object.keys(error)).toEqual(['path', 'timestamp', 'message']);
   });
+
+  it.each`
+    language | message
+    ${'en'}  | ${'Incorrect credentials'}
+    ${'fr'}  | ${'Données de connexion incorrectes'}
+  `(
+    `returns "$message" when authentication fails and language is set as $language`,
+    async ({ language, message }) => {
+      const response = await postAuthentication(
+        {
+          email: 'user1@mail.com',
+          password: 'P4ssword'
+        },
+        { language }
+      );
+
+      expect(response.body.message).toBe(message);
+    }
+  );
 });
