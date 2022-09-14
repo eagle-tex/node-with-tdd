@@ -161,4 +161,13 @@ describe('Authentication', () => {
 
     expect(response.status).toBe(401);
   });
+
+  it('returns 401 when password is not valid', async () => {
+    const response = await postAuthentication({
+      // no password field
+      email: 'user1@mail.com'
+    });
+
+    expect(response.status).toBe(401);
+  });
 });
