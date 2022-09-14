@@ -132,4 +132,24 @@ describe('Authentication', () => {
     expect(error.timestamp).toBeGreaterThan(nowInMillis);
     expect(Object.keys(error)).toEqual(['path', 'timestamp', 'message']);
   });
+
+  it.each`
+    language | message
+    ${'en'}  | ${'Account is inactive'}
+    ${'fr'}  | ${'Le compte est inactif'}
+  `(
+    `returns "$message" when authentication fails for inactive account and language is set as $language`,
+    async ({ language, message }) => {
+      await addUser({ ...activeUser, inactive: true });
+      const response = await postAuthentication(
+        {
+          email: 'user1@mail.com',
+          password: 'P4ssword'
+        },
+        { language }
+      );
+
+      expect(response.body.message).toBe(message);
+    }
+  );
 });
