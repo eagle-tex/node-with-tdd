@@ -3,6 +3,7 @@ const UserService = require('./UserService');
 const { check, validationResult } = require('express-validator');
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
+const ForbiddenException = require('../error/ForbiddenException');
 
 const router = express.Router();
 
@@ -77,8 +78,8 @@ router.get('/api/1.0/users/:id', async (req, res, next) => {
   }
 });
 
-router.put('/api/1.0/users/:id', (req, res) => {
-  return res.status(403).send();
+router.put('/api/1.0/users/:id', () => {
+  throw new ForbiddenException('unauthorized_user_update');
 });
 
 module.exports = router;
