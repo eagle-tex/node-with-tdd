@@ -97,4 +97,14 @@ describe('Authentication', () => {
       expect(response.body.message).toBe(message);
     }
   );
+
+  it('returns 401 when password is wrong', async () => {
+    await addUser();
+    const response = await postAuthentication({
+      email: 'user1@mail.com',
+      password: 'Inc0rrect-password'
+    });
+
+    expect(response.status).toBe(401);
+  });
 });
