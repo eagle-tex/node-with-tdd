@@ -82,4 +82,13 @@ describe('User Update', () => {
 
     expect(response.status).toBe(403);
   });
+
+  it('returns 403 Forbidden when request sent with incorrect password in basic authorization', async () => {
+    await addUser();
+    const response = await putUser(5, null, {
+      auth: { email: 'user1@mail.com', password: 'password' }
+    });
+
+    expect(response.status).toBe(403);
+  });
 });
