@@ -91,4 +91,18 @@ describe('User Update', () => {
 
     expect(response.status).toBe(403);
   });
+
+  it('returns 403 Forbidden when update request is sent with correct credentials of another user', async () => {
+    await addUser();
+    const userToBeUpdated = await addUser({
+      ...activeUser,
+      username: 'user2',
+      email: 'user2@mail.com'
+    });
+    const response = await putUser(userToBeUpdated.id, null, {
+      auth: { email: 'user1@mail.com', password: 'P4ssword' }
+    });
+
+    expect(response.status).toBe(403);
+  });
 });
