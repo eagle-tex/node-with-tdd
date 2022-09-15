@@ -105,4 +105,13 @@ describe('User Update', () => {
 
     expect(response.status).toBe(403);
   });
+
+  it('returns 403 Forbidden when update request is sent by inactive user with his correct credentials', async () => {
+    const inactiveUser = await addUser({ ...activeUser, inactive: true });
+    const response = await putUser(inactiveUser.id, null, {
+      auth: { email: 'user1@mail.com', password: 'P4ssword' }
+    });
+
+    expect(response.status).toBe(403);
+  });
 });
