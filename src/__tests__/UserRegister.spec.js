@@ -33,6 +33,9 @@ beforeAll(async () => {
   server.listen(8587, 'localhost'); // await ?
 
   await sequelize.sync();
+  // to make all tests use the same timeout,
+  // we set the timeout to 20 seconds at the end of beforeAll
+  jest.setTimeout(20000);
 });
 
 // we use return to wait for the asynchronous function (User.destroy())
@@ -44,6 +47,8 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await server.close();
+  // set timeout back to 5 seconds, at module end
+  jest.setTimeout(5000);
 });
 
 const validUser = {
