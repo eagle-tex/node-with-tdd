@@ -4,7 +4,7 @@ const { check, validationResult } = require('express-validator');
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
 const ForbiddenException = require('../error/ForbiddenException');
-const bcrypt = require('bcrypt');
+const basicAuthentication = require('../middleware/basicAuthentication');
 
 const router = express.Router();
 
@@ -79,30 +79,16 @@ router.get('/api/1.0/users/:id', async (req, res, next) => {
   }
 });
 
-router.put('/api/1.0/users/:id', async (req, res, next) => {
-  const authorization = req.headers.authorization;
-  if (authorization) {
-    const encoded = authorization.substring(6);
-    const decoded = Buffer.from(encoded, 'base64').toString('ascii');
-    const [email, password] = decoded.split(':');
-    const user = await UserService.findByEmail(email);
+router.put(
+  '/api/1.0/users/:id',
+  basicAuthentication,
+  async (req, res, next) => {
+    const authenticatedUser = req.authenticatedUser;
 
-    if (!user) {
-      return next(new ForbiddenException('unauthorized_user_update'));
-    }
-
-    // user.id is a number, req.params.id is a string
-    // if(user.id != req.params.id) // `!=` NOT `!==` // this is how it is in the course
-    if (user.id !== Number.parseInt(req.params.id)) {
-      return next(new ForbiddenException('unauthorized_user_update'));
-    }
-
-    if (user.inactive) {
-      return next(new ForbiddenException('unauthorized_user_update'));
-    }
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
+    if (
+      !authenticatedUser ||
+      authenticatedUser.id !== Number.parseInt(req.params.id)
+    ) {
       return next(new ForbiddenException('unauthorized_user_update'));
     }
 
@@ -110,8 +96,6 @@ router.put('/api/1.0/users/:id', async (req, res, next) => {
 
     return res.send();
   }
-
-  return next(new ForbiddenException('unauthorized_user_update'));
-});
+);
 
 module.exports = router;
