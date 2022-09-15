@@ -1,6 +1,7 @@
 const express = require('express');
-const UserService = require('./UserService');
 const { check, validationResult } = require('express-validator');
+
+const UserService = require('./UserService');
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
 const ForbiddenException = require('../error/ForbiddenException');
