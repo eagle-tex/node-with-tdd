@@ -114,4 +114,14 @@ describe('User Update', () => {
 
     expect(response.status).toBe(403);
   });
+
+  it('returns 200 OK when valid update request sent from authorized user', async () => {
+    const savedUser = await addUser();
+    const validUpdate = { username: 'user1-updated' };
+    const response = await putUser(savedUser.id, validUpdate, {
+      auth: { email: savedUser.email, password: 'P4ssword' }
+    });
+
+    expect(response.status).toBe(200);
+  });
 });
