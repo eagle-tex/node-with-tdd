@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const { check, validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
 
 const UserService = require('../user/UserService');
 const AuthenticationException = require('./AuthenticationException');
 const ForbiddenException = require('../error/ForbiddenException');
+const TokenService = require('./TokenService');
 
 router.post(
   '/api/1.0/auth',
@@ -33,7 +33,7 @@ router.post(
       return next(new ForbiddenException());
     }
 
-    const token = jwt.sign({ id: user.id }, 'this-is-our-secret');
+    const token = TokenService.createToken(user);
 
     res.send({
       id: user.id,
