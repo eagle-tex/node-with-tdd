@@ -5,8 +5,16 @@ const tokenAuthentication = async (req, _res, next) => {
 
   if (authorization) {
     const token = authorization.substring(7);
-    const user = TokenService.verifyToken(token);
-    req.authenticatedUser = user;
+    try {
+      const user = TokenService.verifyToken(token);
+      req.authenticatedUser = user;
+    } catch (err) {
+      // NOTE: We do not need to do anything here
+      // if we don't have an authenticated user,
+      // our handlers (PUT route handler) will be acting accordingly.
+      // i.e returning ForbiddenException('unauthorized_user_update')
+      // src/user/UserRouter.js -> router.put -> Line 100
+    }
   }
 
   next();
