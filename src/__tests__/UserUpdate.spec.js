@@ -28,24 +28,23 @@ const addUser = async (user = { ...activeUser }) => {
   return await User.create(user); // return the created user object
 };
 
-const putUser = (id = 5, body = null, options = {}) => {
-  const agent = request(app).put(`/api/1.0/users/${id}`);
+const putUser = async (id = 5, body = null, options = {}) => {
+  let agent = request(app);
+
+  let token; // undefined
+  if (options.auth) {
+    const response = await agent.post('/api/1.0/auth').send(options.auth);
+    token = response.body.token;
+  }
+
+  agent = request(app).put(`/api/1.0/users/${id}`);
 
   if (options.language) {
     agent.set('Accept-Language', options.language);
   }
 
-  if (options.auth) {
-    // create a Base64 encoded version of our credentials
-    // which looks like `Basic dxN...`
-    const { email, password } = options.auth;
-
-    // NOTE: manual creation of basic auth
-    // const merged = `${email}:{password}`;
-    // const base64 = Buffer.from(merged).toString('base64');
-    // agent.set('Authorization', `Basic ${base64}`);
-
-    agent.auth(email, password);
+  if (token) {
+    agent.set('Authorization', `Bearer ${token}`);
   }
 
   return agent.send(body);
