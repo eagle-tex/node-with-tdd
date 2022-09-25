@@ -124,7 +124,7 @@ describe('User Update', () => {
     expect(response.status).toBe(200);
   });
 
-  it('updates user in database when valid update request sent from authorized user', async () => {
+  fit('updates user in database when valid update request sent from authorized user', async () => {
     const savedUser = await addUser();
     const validUpdate = { username: 'user1-updated' };
     await putUser(savedUser.id, validUpdate, {
