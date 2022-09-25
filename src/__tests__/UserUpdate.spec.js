@@ -98,6 +98,7 @@ describe('User Update', () => {
       username: 'user2',
       email: 'user2@mail.com'
     });
+
     const response = await putUser(userToBeUpdated.id, null, {
       auth: { email: 'user1@mail.com', password: 'P4ssword' }
     });
