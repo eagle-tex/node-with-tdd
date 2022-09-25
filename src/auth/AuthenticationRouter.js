@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const { check, validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
 
 const UserService = require('../user/UserService');
 const AuthenticationException = require('./AuthenticationException');
@@ -32,9 +33,12 @@ router.post(
       return next(new ForbiddenException());
     }
 
+    const token = jwt.sign({ id: user.id }, 'this-is-our-secret');
+
     res.send({
       id: user.id,
-      username: user.username
+      username: user.username,
+      token
     });
   }
 );
