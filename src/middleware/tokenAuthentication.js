@@ -6,7 +6,7 @@ const tokenAuthentication = async (req, _res, next) => {
   if (authorization) {
     const token = authorization.substring(7);
     try {
-      const user = TokenService.verifyToken(token);
+      const user = await TokenService.verifyToken(token);
       req.authenticatedUser = user;
     } catch (err) {
       // NOTE: We do not need to do anything here
