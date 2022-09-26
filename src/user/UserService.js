@@ -1,6 +1,5 @@
 const User = require('./User');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const Sequelize = require('sequelize');
 
 const EmailService = require('../email/EmailService');
@@ -8,10 +7,7 @@ const sequelize = require('../config/database');
 const EmailException = require('../email/EmailException');
 const InvalidTokenException = require('../user/InvalidTokenException');
 const UserNotFoundException = require('./UserNotFoundException');
-
-const generateToken = (length) => {
-  return crypto.randomBytes(length).toString('hex').substring(0, length);
-};
+const { randomString } = require('../shared/generator');
 
 const save = async (body) => {
   // destructure body (req.body) and get the specific fields we need
@@ -22,7 +18,7 @@ const save = async (body) => {
     username,
     email,
     password: hash,
-    activationToken: generateToken(16)
+    activationToken: randomString(16)
   };
 
   // create a transaction
