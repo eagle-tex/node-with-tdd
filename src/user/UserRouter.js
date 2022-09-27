@@ -105,8 +105,8 @@ router.put(
   }
 );
 
-router.delete('/api/1.0/users/:id', (_req, res) => {
-  res.status(403).send();
+router.delete('/api/1.0/users/:id', (_req, _res) => {
+  throw new ForbiddenException('unauthorized_user_delete');
 });
 
 module.exports = router;
