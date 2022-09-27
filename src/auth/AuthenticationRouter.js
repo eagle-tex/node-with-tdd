@@ -43,4 +43,8 @@ router.post(
   }
 );
 
+router.post('/api/1.0/logout', (req, res) => {
+  res.send();
+});
+
 module.exports = router;
