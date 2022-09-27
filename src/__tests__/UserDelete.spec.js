@@ -95,14 +95,11 @@ describe('User Delete', () => {
     expect(response.status).toBe(403);
   });
 
-  // it('returns 403 Forbidden when update request is sent by inactive user with his correct credentials', async () => {
-  //   const inactiveUser = await addUser({ ...activeUser, inactive: true });
-  //   const response = await putUser(inactiveUser.id, null, {
-  //     auth: { email: 'user1@mail.com', password: 'P4ssword' }
-  //   });
+  it('returns 403 when token is not valid', async () => {
+    const response = await deleteUser(5, { token: '123' });
 
-  //   expect(response.status).toBe(403);
-  // });
+    expect(response.status).toBe(403);
+  });
 
   // it('returns 200 OK when valid update request sent from authorized user', async () => {
   //   const savedUser = await addUser();
@@ -124,11 +121,5 @@ describe('User Delete', () => {
   //   const inDBUser = await User.findOne({ where: { id: savedUser.id } });
 
   //   expect(inDBUser.username).toBe(validUpdate.username);
-  // });
-
-  // it('returns 403 when token is not valid', async () => {
-  //   const response = await putUser(5, null, { token: '123' });
-
-  //   expect(response.status).toBe(403);
   // });
 });
