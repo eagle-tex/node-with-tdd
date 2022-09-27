@@ -60,21 +60,21 @@ describe('User Delete', () => {
     expect(response.status).toBe(403);
   });
 
-  // it.each`
-  //   language | message
-  //   ${'en'}  | ${en.unauthorized_user_update}
-  //   ${'fr'}  | ${fr.unauthorized_user_update}
-  // `(
-  //   'returns error body with "$message" for unauthorized request when language is $language',
-  //   async ({ language, message }) => {
-  //     const nowInMillis = new Date().getTime();
-  //     const response = await putUser(5, null, { language });
+  it.each`
+    language | message
+    ${'en'}  | ${en.unauthorized_user_delete}
+    ${'fr'}  | ${fr.unauthorized_user_delete}
+  `(
+    'returns error body with "$message" for unauthorized delete request when language is $language',
+    async ({ language, message }) => {
+      const nowInMillis = new Date().getTime();
+      const response = await deleteUser(5, { language });
 
-  //     expect(response.body.path).toBe('/api/1.0/users/5');
-  //     expect(response.body.timestamp).toBeGreaterThan(nowInMillis);
-  //     expect(response.body.message).toBe(message);
-  //   }
-  // );
+      expect(response.body.path).toBe('/api/1.0/users/5');
+      expect(response.body.timestamp).toBeGreaterThan(nowInMillis);
+      expect(response.body.message).toBe(message);
+    }
+  );
 
   // it('returns 403 Forbidden when request sent with incorrect e-mail in basic authorization', async () => {
   //   await addUser();
