@@ -14,30 +14,30 @@ beforeEach(async () => {
   await User.destroy({ truncate: true });
 });
 
-// const activeUser = {
-//   username: 'user1',
-//   email: 'user1@mail.com',
-//   password: 'P4ssword',
-//   inactive: false
-// };
+const activeUser = {
+  username: 'user1',
+  email: 'user1@mail.com',
+  password: 'P4ssword',
+  inactive: false
+};
 
-// const addUser = async (user = { ...activeUser }) => {
-//   const hash = await bcrypt.hash(user.password, 10);
-//   user.password = hash;
+const addUser = async (user = { ...activeUser }) => {
+  const hash = await bcrypt.hash(user.password, 10);
+  user.password = hash;
 
-//   return await User.create(user); // return the created user object
-// };
+  return await User.create(user); // return the created user object
+};
 
-// const auth = async (options = {}) => {
-//   let token; // undefined
-//   const agent = request(app);
-//   if (options.auth) {
-//     const response = await agent.post('/api/1.0/auth').send(options.auth);
-//     token = response.body.token;
-//   }
+const auth = async (options = {}) => {
+  let token; // undefined
+  const agent = request(app);
+  if (options.auth) {
+    const response = await agent.post('/api/1.0/auth').send(options.auth);
+    token = response.body.token;
+  }
 
-//   return token;
-// };
+  return token;
+};
 
 const deleteUser = async (id = 5, options = {}) => {
   const agent = request(app).delete(`/api/1.0/users/${id}`);
@@ -76,38 +76,24 @@ describe('User Delete', () => {
     }
   );
 
-  // it('returns 403 Forbidden when request sent with incorrect e-mail in basic authorization', async () => {
-  //   await addUser();
-  //   const response = await putUser(5, null, {
-  //     auth: { email: 'user1000@mail.com', password: 'P4ssword' }
-  //   });
+  it('returns 403 Forbidden when delete request is sent with correct credentials of another user', async () => {
+    await addUser();
+    const userToBedeleted = await addUser({
+      ...activeUser,
+      username: 'user2',
+      email: 'user2@mail.com'
+    });
 
-  //   expect(response.status).toBe(403);
-  // });
+    const token = await auth({
+      auth: { email: 'user1@mail.com', password: 'P4ssword' }
+    });
 
-  // it('returns 403 Forbidden when request sent with incorrect password in basic authorization', async () => {
-  //   await addUser();
-  //   const response = await putUser(5, null, {
-  //     auth: { email: 'user1@mail.com', password: 'password' }
-  //   });
+    const response = await deleteUser(userToBedeleted.id, {
+      token: token
+    });
 
-  //   expect(response.status).toBe(403);
-  // });
-
-  // it('returns 403 Forbidden when update request is sent with correct credentials of another user', async () => {
-  //   await addUser();
-  //   const userToBeUpdated = await addUser({
-  //     ...activeUser,
-  //     username: 'user2',
-  //     email: 'user2@mail.com'
-  //   });
-
-  //   const response = await putUser(userToBeUpdated.id, null, {
-  //     auth: { email: 'user1@mail.com', password: 'P4ssword' }
-  //   });
-
-  //   expect(response.status).toBe(403);
-  // });
+    expect(response.status).toBe(403);
+  });
 
   // it('returns 403 Forbidden when update request is sent by inactive user with his correct credentials', async () => {
   //   const inactiveUser = await addUser({ ...activeUser, inactive: true });
