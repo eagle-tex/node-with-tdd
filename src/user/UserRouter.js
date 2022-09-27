@@ -105,8 +105,17 @@ router.put(
   }
 );
 
-router.delete('/api/1.0/users/:id', (_req, _res) => {
-  throw new ForbiddenException('unauthorized_user_delete');
+router.delete('/api/1.0/users/:id', tokenAuthentication, (req, res) => {
+  const authenticatedUser = req.authenticatedUser;
+
+  if (
+    !authenticatedUser ||
+    authenticatedUser.id !== Number.parseInt(req.params.id)
+  ) {
+    throw new ForbiddenException('unauthorized_user_delete');
+  }
+
+  res.send();
 });
 
 module.exports = router;
