@@ -105,4 +105,8 @@ router.put(
   }
 );
 
+router.delete('/api/1.0/users/:id', (_req, res) => {
+  res.status(403).send();
+});
+
 module.exports = router;
