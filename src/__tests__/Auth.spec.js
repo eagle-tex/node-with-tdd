@@ -37,6 +37,10 @@ const postAuthentication = async (credentials, options = {}) => {
   return await agent.send(credentials);
 };
 
+const postLogout = async () => {
+  return request(app).post('/api/1.0/logout').send();
+};
+
 describe('Authentication', () => {
   it('returns 200 OK when credentials are correct', async () => {
     await addUser();
@@ -188,7 +192,7 @@ describe('Authentication', () => {
 
 describe('Logout', () => {
   it('returns 200 OK on unauthorized request sent for logout', async () => {
-    const response = await request(app).post('/api/1.0/logout').send();
+    const response = await postLogout();
 
     expect(response.status).toBe(200);
   });
