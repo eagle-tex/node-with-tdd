@@ -6,7 +6,6 @@ const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
 const ForbiddenException = require('../error/ForbiddenException');
 const tokenAuthentication = require('../middleware/tokenAuthentication');
-const TokenService = require('../auth/TokenService');
 
 const router = express.Router();
 
@@ -120,9 +119,6 @@ router.delete(
     }
 
     await UserService.deleteUser(req.params.id);
-    const authorization = req.headers.authorization;
-    const token = authorization.substring(7);
-    await TokenService.deleteToken(token);
 
     res.send();
   }
