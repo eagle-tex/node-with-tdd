@@ -8,7 +8,6 @@ const EmailException = require('../email/EmailException');
 const InvalidTokenException = require('../user/InvalidTokenException');
 const UserNotFoundException = require('./UserNotFoundException');
 const { randomString } = require('../shared/generator');
-const TokenService = require('../auth/TokenService');
 
 const save = async (body) => {
   // destructure body (req.body) and get the specific fields we need
@@ -94,7 +93,6 @@ const updateUser = async (id, updatedBody) => {
 
 const deleteUser = async (id) => {
   await User.destroy({ where: { id: id } });
-  await TokenService.deleteTokensOfUser(id);
 };
 
 module.exports = {
