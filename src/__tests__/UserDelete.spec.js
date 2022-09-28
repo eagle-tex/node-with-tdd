@@ -5,6 +5,7 @@ const sequelize = require('../config/database');
 const bcrypt = require('bcrypt');
 const en = require('../../locales/en/translation.json');
 const fr = require('../../locales/fr/translation.json');
+const Token = require('../auth/Token');
 
 beforeAll(async () => {
   await sequelize.sync();
@@ -125,5 +126,19 @@ describe('User Delete', () => {
     const inDBUser = await User.findOne({ where: { id: savedUser.id } });
 
     expect(inDBUser).toBeNull();
+  });
+
+  it('deletes token from database when delete user request sent from authorized user', async () => {
+    const savedUser = await addUser();
+    const token = await auth({
+      auth: { email: 'user1@mail.com', password: 'P4ssword' }
+    });
+    await deleteUser(savedUser.id, {
+      token: token
+    });
+
+    const tokenInDB = await Token.findOne({ where: { token: token } });
+
+    expect(tokenInDB).toBeNull();
   });
 });
