@@ -11,7 +11,11 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await User.destroy({ truncate: true });
+  // NOTE: because we included `userId` field as a foreignKey in User-Token
+  // relationship, the `{ truncate: true }` option would not be valid anymore
+  // the database will not allow a `{ truncate: true }`.
+  // we replace that with a `{ truncate: { cascade: true }}`
+  await User.destroy({ truncate: { cascade: true } });
 });
 
 const activeUser = {
