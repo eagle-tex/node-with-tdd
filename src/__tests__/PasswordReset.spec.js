@@ -73,7 +73,7 @@ describe('Password Reset', () => {
     ${'en'}  | ${en.email_invalid}
     ${'fr'}  | ${fr.email_invalid}
   `(
-    'returns 404 with validation error having "$message" when requeset does not have valid e-mail and language is $language',
+    'returns 404 with validation error having "$message" when request does not have valid e-mail and language is $language',
     async ({ language, message }) => {
       const response = await postPasswordReset(null, {
         language: language
@@ -90,4 +90,18 @@ describe('Password Reset', () => {
 
     expect(response.status).toBe(200);
   });
+
+  it.each`
+    language | message
+    ${'en'}  | ${en.password_reset_request_success}
+    ${'fr'}  | ${fr.password_reset_request_success}
+  `(
+    'returns success response body with "$message" for known e-mail for password reset request when language is set as $language',
+    async ({ language, message }) => {
+      const user = await addUser();
+      const response = await postPasswordReset(user.email, { language });
+
+      expect(response.body.message).toBe(message);
+    }
+  );
 });
