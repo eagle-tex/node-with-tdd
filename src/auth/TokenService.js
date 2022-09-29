@@ -50,7 +50,7 @@ const scheduleCleanup = () => {
         }
       }
     });
-  }, 1000);
+  }, 60 * 60 * 1000);
 };
 
 module.exports = { createToken, verifyToken, deleteToken, scheduleCleanup };
