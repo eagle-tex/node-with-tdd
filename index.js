@@ -2,6 +2,7 @@ const app = require('./src/app');
 const sequelize = require('./src/config/database');
 const User = require('./src/user/User');
 const bcrypt = require('bcrypt');
+const TokenService = require('./src/auth/TokenService');
 
 const port = process.env.PORT || 3000;
 
@@ -22,6 +23,8 @@ const addUsers = async (activeUserCount, inactiveUserCount = 0) => {
 sequelize.sync({ force: true }).then(async () => {
   await addUsers(25);
 });
+
+TokenService.scheduleCleanup();
 
 app.listen(port, () => {
   console.log(`App running on PORT ${port}`);
