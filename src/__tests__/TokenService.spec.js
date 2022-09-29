@@ -24,8 +24,10 @@ describe('Scheduled Token Cleanup', () => {
 
     TokenService.scheduleCleanup();
 
-    const tokenInDB = await Token.findOne({ where: { token: token } });
-
-    expect(tokenInDB).toBeNull();
+    setTimeout(async () => {
+      expect.assertions(1);
+      const tokenInDB = await Token.findOne({ where: { token: token } });
+      expect(tokenInDB).toBeNull();
+    }, 2000);
   });
 });
