@@ -1,6 +1,6 @@
 const sequelize = require('../config/database');
 const Token = require('../auth/Token');
-// const TokenService = require('../auth/TokenService');
+const TokenService = require('../auth/TokenService');
 
 beforeAll(async () => {
   await sequelize.sync();
@@ -13,7 +13,19 @@ beforeEach(async () => {
 });
 
 describe('Scheduled Token Cleanup', () => {
-  it('tests if current test suite runs', () => {
-    expect(1).toBe(2);
+  it('clears the expired token with scheduled task', async () => {
+    const token = 'test-token';
+    const eightDaysAgo = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000);
+    await Token.create({
+      token: token,
+      // no need to add userId
+      lastUsedAt: eightDaysAgo
+    });
+
+    TokenService.scheduleCleanup();
+
+    const tokenInDB = await Token.findOne({ where: { token: token } });
+
+    expect(tokenInDB).toBeNull();
   });
 });
