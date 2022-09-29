@@ -111,8 +111,17 @@ router.delete('/api/1.0/users/:id', async (req, res, next) => {
   res.send();
 });
 
-router.post('/api/1.0/password-reset', () => {
-  throw new NotFoundException('email_not_in_use');
-});
+router.post(
+  '/api/1.0/password-reset',
+  check('email').isEmail().withMessage('email_invalid'),
+  (req, _res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors.array());
+    }
+
+    throw new NotFoundException('email_not_in_use');
+  }
+);
 
 module.exports = router;
