@@ -250,4 +250,25 @@ describe('Token Expiration', () => {
 
     expect(response.status).toBe(403);
   });
+
+  it('refreshes lastUsedAt when unexpired token is used', async () => {
+    const savedUser = await addUser();
+
+    const token = 'test-token';
+    const fourDaysAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000); // 4 days in ms
+    await Token.create({
+      token: token,
+      userId: savedUser.id,
+      lastUsedAt: fourDaysAgo
+    });
+
+    const validUpdate = { username: 'user1-updated' };
+    const rightBeforeSendingRequest = new Date();
+    await putUser(savedUser.id, validUpdate, { token: token });
+    const tokenInDB = await Token.findOne({ where: { token: token } });
+
+    expect(tokenInDB.lastUsedAt.getTime()).toBeGreaterThan(
+      rightBeforeSendingRequest.getTime()
+    );
+  });
 });
