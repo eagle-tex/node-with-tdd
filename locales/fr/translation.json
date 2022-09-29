@@ -17,5 +17,6 @@
   "inactive_authentication_failure": "Le compte est inactif",
   "unauthorized_user_update": "Vous n'êtes pas authorizé à modifier les données de l'utilisateur",
   "unauthorized_user_delete": "Vous n'êtes pas authorizé à supprimer l'utilisateur",
-  "email_not_in_use": "Adresse e-mail non trouvée"
+  "email_not_in_use": "Adresse e-mail non trouvée",
+  "password_reset_request_success": "Vérifiez votre e-mail pour réinitialiser votre mot de passe"
 }
