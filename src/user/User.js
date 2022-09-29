@@ -24,7 +24,10 @@ User.init(
       defaultValue: true
     },
     activationToken: {
-      type: Sequelize.BOOLEAN
+      type: Sequelize.STRING
+    },
+    passwordResetToken: {
+      type: Sequelize.STRING
     }
   },
   {
