@@ -5,6 +5,7 @@ const UserService = require('./UserService');
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
 const ForbiddenException = require('../error/ForbiddenException');
+const NotFoundException = require('../error/NotFoundException');
 
 const router = express.Router();
 
@@ -108,6 +109,10 @@ router.delete('/api/1.0/users/:id', async (req, res, next) => {
   await UserService.deleteUser(req.params.id);
 
   res.send();
+});
+
+router.post('/api/1.0/password-reset', () => {
+  throw new NotFoundException('email_not_in_use');
 });
 
 module.exports = router;
