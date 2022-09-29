@@ -37,4 +37,16 @@ const deleteToken = async (token) => {
   await Token.destroy({ where: { token: token } });
 };
 
-module.exports = { createToken, verifyToken, deleteToken };
+const scheduleCleanup = async () => {
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  await Token.destroy({
+    where: {
+      lastUsedAt: {
+        [Sequelize.Op.lt]: oneWeekAgo
+      }
+    }
+  });
+};
+
+module.exports = { createToken, verifyToken, deleteToken, scheduleCleanup };
