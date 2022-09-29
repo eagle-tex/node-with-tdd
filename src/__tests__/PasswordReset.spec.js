@@ -104,4 +104,12 @@ describe('Password Reset', () => {
       expect(response.body.message).toBe(message);
     }
   );
+
+  it('creates passwordResetToken when a password reset request is sent for known e-mail', async () => {
+    const user = await addUser();
+    await postPasswordReset(user.email);
+    const userInDB = await User.findOne({ where: { email: user.email } });
+
+    expect(userInDB.passwordResetToken).toBeTruthy();
+  });
 });
