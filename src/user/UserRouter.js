@@ -123,7 +123,7 @@ router.post(
     const user = await UserService.findByEmail(req.body.email);
 
     if (user) {
-      return res.send();
+      return res.send({ message: req.t('password_reset_request_success') });
     }
 
     return next(new NotFoundException('email_not_in_use'));
