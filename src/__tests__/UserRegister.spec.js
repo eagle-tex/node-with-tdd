@@ -5,6 +5,7 @@ const sequelize = require('../config/database');
 const SMTPServer = require('smtp-server').SMTPServer;
 const en = require('../../locales/en/translation.json');
 const fr = require('../../locales/fr/translation.json');
+const config = require('config');
 
 let lastMail = null;
 let server = null;
@@ -30,7 +31,7 @@ beforeAll(async () => {
     }
   });
 
-  server.listen(8587, 'localhost'); // await ?
+  server.listen(config.mail.port, 'localhost'); // await ?
 
   await sequelize.sync();
   // to make all tests use the same timeout,
