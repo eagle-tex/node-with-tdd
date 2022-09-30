@@ -7,16 +7,55 @@ const fr = require('../../locales/fr/translation.json');
 const User = require('../user/User');
 const sequelize = require('../config/database');
 
+const SMTPServer = require('smtp-server').SMTPServer;
+const config = require('config');
+
+let lastMail, server;
+let simulateSmtpFailure = false;
+
 beforeAll(async () => {
+  server = new SMTPServer({
+    authOptional: true,
+    onData(stream, _session, callback) {
+      let mailBody = null;
+      stream.on('data', (data) => {
+        mailBody += data.toString();
+      });
+      stream.on('end', () => {
+        if (simulateSmtpFailure) {
+          const err = new Error('Invalid mailbox');
+          err.responseCode = 553;
+          return callback(err);
+        }
+        lastMail = mailBody;
+        callback();
+      });
+    }
+  });
+
+  server.listen(config.mail.port, 'localhost'); // await ?
+
   await sequelize.sync();
+  // to make all tests use the same timeout,
+  // we set the timeout to 20 seconds at the end of beforeAll
+  jest.setTimeout(20000);
 });
 
+// we use return to wait for the asynchronous function (User.destroy())
+// to resolve before continuing
 beforeEach(async () => {
+  simulateSmtpFailure = false;
   // NOTE: because we included `userId` field as a foreignKey in User-Token
   // relationship, the `{ truncate: true }` option would not be valid anymore
   // the database will not allow a `{ truncate: true }`.
   // we replace that with a `{ truncate: { cascade: true }}`
   await User.destroy({ truncate: { cascade: true } });
+});
+
+afterAll(async () => {
+  await server.close();
+  // set timeout back to 5 seconds, at module end
+  jest.setTimeout(5000);
 });
 
 const activeUser = {
@@ -111,5 +150,15 @@ describe('Password Reset', () => {
     const userInDB = await User.findOne({ where: { email: user.email } });
 
     expect(userInDB.passwordResetToken).toBeTruthy();
+  });
+
+  it('sends a password reset e-mail with passwordResetToken', async () => {
+    const user = await addUser();
+    await postPasswordReset(user.email);
+    const userInDB = await User.findOne({ where: { email: user.email } });
+    const passwordResetToken = userInDB.passwordResetToken;
+
+    expect(lastMail).toContain('user1@mail.com');
+    expect(lastMail).toContain(passwordResetToken);
   });
 });
