@@ -5,6 +5,7 @@ const app = require('../app');
 const en = require('../../locales/en/translation.json');
 const fr = require('../../locales/fr/translation.json');
 const User = require('../user/User');
+const Token = require('../auth/Token');
 const sequelize = require('../config/database');
 
 const SMTPServer = require('smtp-server').SMTPServer;
@@ -349,5 +350,26 @@ describe('Password Update', () => {
 
     expect(userInDB.activationToken).toBeFalsy();
     expect(userInDB.inactive).toBe(false);
+  });
+
+  it('clears all tokens of user after valid password reset', async () => {
+    const user = await addUser();
+    user.passwordResetToken = PASSWORD_RESET_TOKEN;
+    await user.save();
+
+    await Token.create({
+      token: 'token1',
+      userId: user.id,
+      lastUsedAt: Date.now()
+    });
+
+    await putPasswordUpdate({
+      password: 'N3w-password',
+      passwordResetToken: PASSWORD_RESET_TOKEN
+    });
+
+    const tokens = await Token.findAll({ where: { userId: user.id } });
+
+    expect(tokens.length).toBe(0);
   });
 });
