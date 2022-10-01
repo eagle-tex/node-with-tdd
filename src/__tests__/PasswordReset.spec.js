@@ -302,4 +302,19 @@ describe('Password Update', () => {
 
     expect(response.status).toBe(200);
   });
+
+  it('updates the password in database when the request is valid', async () => {
+    const user = await addUser();
+    user.passwordResetToken = PASSWORD_RESET_TOKEN;
+    await user.save();
+
+    await putPasswordUpdate({
+      password: 'N3w-password',
+      passwordResetToken: PASSWORD_RESET_TOKEN
+    });
+
+    const userInDB = await User.findOne({ where: { email: user.email } });
+
+    expect(userInDB.password).not.toEqual(user.password);
+  });
 });
