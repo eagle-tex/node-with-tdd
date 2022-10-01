@@ -128,8 +128,8 @@ router.post(
   }
 );
 
-router.put('/api/1.0/user/password', (_req, res) => {
-  res.status(403).send();
+router.put('/api/1.0/user/password', (_req, _res) => {
+  throw new ForbiddenException('unauthorized_password_reset');
 });
 
 module.exports = router;
