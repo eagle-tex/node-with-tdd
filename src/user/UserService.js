@@ -62,7 +62,7 @@ const getUsers = async (page, size, authenticatedUser) => {
         [Sequelize.Op.not]: id
       }
     },
-    attributes: ['id', 'username', 'email'],
+    attributes: ['id', 'username', 'email', 'image'],
     limit: size,
     offset: page * size
   });
@@ -78,7 +78,7 @@ const getUsers = async (page, size, authenticatedUser) => {
 const getUser = async (id) => {
   const user = await User.findOne({
     where: { id, inactive: false },
-    attributes: ['id', 'username', 'email']
+    attributes: ['id', 'username', 'email', 'image']
   });
   if (!user) {
     throw new NotFoundException('user_not_found');
