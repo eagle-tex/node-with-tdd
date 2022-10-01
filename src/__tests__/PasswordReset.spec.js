@@ -82,6 +82,8 @@ const postPasswordReset = (email = 'user1@mail.com', options = {}) => {
   return agent.send({ email: email });
 };
 
+const PASSWORD_RESET_TOKEN = 'valid-test-token';
+
 const putPasswordUpdate = (body = {}, options = {}) => {
   const agent = request(app).put('/api/1.0/user/password');
 
@@ -273,14 +275,13 @@ describe('Password Update', () => {
     'returns password validation error "$message" when language is set to $language and password is "$value"',
     async ({ language, value, message }) => {
       const user = await addUser();
-      const TEST_TOKEN = 'valid-test-token';
-      user.passwordResetToken = TEST_TOKEN;
+      user.passwordResetToken = PASSWORD_RESET_TOKEN;
       await user.save();
 
       const response = await putPasswordUpdate(
         {
           password: value,
-          passwordResetToken: TEST_TOKEN
+          passwordResetToken: PASSWORD_RESET_TOKEN
         },
         { language }
       );
@@ -291,13 +292,12 @@ describe('Password Update', () => {
 
   it('returns 200 OK when valid password is sent with valid reset token', async () => {
     const user = await addUser();
-    const TEST_TOKEN = 'valid-test-token';
-    user.passwordResetToken = TEST_TOKEN;
+    user.passwordResetToken = PASSWORD_RESET_TOKEN;
     await user.save();
 
     const response = await putPasswordUpdate({
       password: 'N3w-password',
-      passwordResetToken: TEST_TOKEN
+      passwordResetToken: PASSWORD_RESET_TOKEN
     });
 
     expect(response.status).toBe(200);
