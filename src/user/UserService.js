@@ -116,6 +116,7 @@ const updatePassword = async (updateRequest) => {
   const user = await findByPasswordResetToken(updateRequest.passwordResetToken);
   const hash = await bcrypt.hash(updateRequest.password, 10);
   user.password = hash;
+  user.passwordResetToken = null;
   await user.save();
 };
 
