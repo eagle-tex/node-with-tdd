@@ -228,4 +228,13 @@ describe('Password Update', () => {
       expect(response.body.message).toBe(message);
     }
   );
+
+  it('returns 403 when password update request with invalid password pattern and the reset token is invalid', async () => {
+    const response = await putPasswordUpdate({
+      password: 'not-valid',
+      passwordResetToken: 'abcd'
+    });
+
+    expect(response.status).toBe(403);
+  });
 });
