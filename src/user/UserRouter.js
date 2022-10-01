@@ -153,12 +153,14 @@ router.put(
     .bail()
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
     .withMessage('password_pattern'),
-  async (req, _res, next) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return next(new ValidationException(errors.array()));
     }
+
+    res.send();
   }
 );
 
