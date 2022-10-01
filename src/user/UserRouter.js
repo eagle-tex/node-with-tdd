@@ -140,18 +140,17 @@ router.put(
     .bail()
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
     .withMessage('password_pattern'),
-  async (req, res, next) => {
+  async (req, _res, next) => {
     const errors = validationResult(req);
     const user = await User.findOne({
       where: { passwordResetToken: req.body.passwordResetToken }
     });
 
     if (!errors.isEmpty() && user) {
-      // return next(new ValidationException(errors.array()));
-      return res.status(400).send();
+      return next(new ValidationException(errors.array()));
     }
 
-    return next(new ForbiddenException('unauthorized_password_reset'));
+    next(new ForbiddenException('unauthorized_password_reset'));
   }
 );
 
