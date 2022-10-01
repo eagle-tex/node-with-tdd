@@ -89,6 +89,7 @@ const getUser = async (id) => {
 const updateUser = async (id, updatedBody) => {
   const user = await User.findOne({ where: { id } });
   user.username = updatedBody.username;
+  user.image = updatedBody.image;
   await user.save();
 };
 
