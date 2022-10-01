@@ -128,4 +128,8 @@ router.post(
   }
 );
 
+router.put('/api/1.0/user/password', (_req, res) => {
+  res.status(403).send();
+});
+
 module.exports = router;
