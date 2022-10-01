@@ -131,6 +131,17 @@ router.post(
 
 router.put(
   '/api/1.0/user/password',
+
+  async (req, _res, next) => {
+    const user = await User.findOne({
+      where: { passwordResetToken: req.body.passwordResetToken }
+    });
+    if (!user) {
+      return next(new ForbiddenException('unauthorized_password_reset'));
+    }
+    next();
+  },
+
   check('password')
     .notEmpty()
     .withMessage('password_null')
@@ -142,15 +153,10 @@ router.put(
     .withMessage('password_pattern'),
   async (req, _res, next) => {
     const errors = validationResult(req);
-    const user = await User.findOne({
-      where: { passwordResetToken: req.body.passwordResetToken }
-    });
 
-    if (!errors.isEmpty() && user) {
+    if (!errors.isEmpty()) {
       return next(new ValidationException(errors.array()));
     }
-
-    next(new ForbiddenException('unauthorized_password_reset'));
   }
 );
 
