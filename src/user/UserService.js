@@ -8,6 +8,7 @@ const EmailException = require('../email/EmailException');
 const InvalidTokenException = require('../user/InvalidTokenException');
 const NotFoundException = require('../error/NotFoundException');
 const { randomString } = require('../shared/generator');
+const TokenService = require('../auth/TokenService');
 
 const save = async (body) => {
   // destructure body (req.body) and get the specific fields we need
@@ -120,6 +121,7 @@ const updatePassword = async (updateRequest) => {
   user.inactive = false;
   user.activationToken = null;
   await user.save();
+  await TokenService.clearTokens(user.id);
 };
 
 const findByPasswordResetToken = (token) => {
