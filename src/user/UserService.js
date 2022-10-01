@@ -91,6 +91,13 @@ const updateUser = async (id, updatedBody) => {
   user.username = updatedBody.username;
   user.image = updatedBody.image;
   await user.save();
+
+  return {
+    id: id,
+    username: user.username,
+    email: user.email,
+    image: user.image
+  };
 };
 
 const deleteUser = async (id) => {
