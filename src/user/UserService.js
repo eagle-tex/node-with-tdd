@@ -117,6 +117,8 @@ const updatePassword = async (updateRequest) => {
   const hash = await bcrypt.hash(updateRequest.password, 10);
   user.password = hash;
   user.passwordResetToken = null;
+  user.inactive = false;
+  user.activationToken = null;
   await user.save();
 };
 
