@@ -317,4 +317,19 @@ describe('Password Update', () => {
 
     expect(userInDB.password).not.toEqual(user.password);
   });
+
+  it('clears the reset token in database when the request is valid', async () => {
+    const user = await addUser();
+    user.passwordResetToken = PASSWORD_RESET_TOKEN;
+    await user.save();
+
+    await putPasswordUpdate({
+      password: 'N3w-password',
+      passwordResetToken: PASSWORD_RESET_TOKEN
+    });
+
+    const userInDB = await User.findOne({ where: { email: user.email } });
+
+    expect(userInDB.passwordResetToken).toBeFalsy();
+  });
 });
