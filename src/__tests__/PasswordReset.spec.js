@@ -288,4 +288,18 @@ describe('Password Update', () => {
       expect(response.body.validationErrors.password).toBe(message);
     }
   );
+
+  it('returns 200 OK when valid password is sent with valid reset token', async () => {
+    const user = await addUser();
+    const TEST_TOKEN = 'valid-test-token';
+    user.passwordResetToken = TEST_TOKEN;
+    await user.save();
+
+    const response = await putPasswordUpdate({
+      password: 'N3w-password',
+      passwordResetToken: TEST_TOKEN
+    });
+
+    expect(response.status).toBe(200);
+  });
 });
