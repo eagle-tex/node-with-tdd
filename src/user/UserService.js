@@ -9,6 +9,7 @@ const InvalidTokenException = require('../user/InvalidTokenException');
 const NotFoundException = require('../error/NotFoundException');
 const { randomString } = require('../shared/generator');
 const TokenService = require('../auth/TokenService');
+const FileService = require('../file/FileService');
 
 const save = async (body) => {
   // destructure body (req.body) and get the specific fields we need
@@ -89,7 +90,9 @@ const getUser = async (id) => {
 const updateUser = async (id, updatedBody) => {
   const user = await User.findOne({ where: { id } });
   user.username = updatedBody.username;
-  user.image = updatedBody.image;
+  if (updatedBody.image) {
+    user.image = FileService.saveProfileImage(updatedBody.image);
+  }
   await user.save();
 
   return {
