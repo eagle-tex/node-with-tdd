@@ -7,6 +7,7 @@ const en = require('../../locales/en/translation.json');
 const fr = require('../../locales/fr/translation.json');
 const fs = require('fs');
 const path = require('path');
+const config = require('config');
 
 beforeAll(async () => {
   await sequelize.sync();
@@ -184,5 +185,27 @@ describe('User Update', () => {
       'email',
       'image'
     ]);
+  });
+
+  it('saves the user image to upload folder and stores filename in user when update has image', async () => {
+    const filePath = path.join(__dirname, 'resources', 'test-png.png');
+    const fileInBase64 = fs.readFileSync(filePath, { encoding: 'base64' });
+
+    const savedUser = await addUser();
+    const validUpdate = { username: 'user1-updated', image: fileInBase64 };
+    await putUser(savedUser.id, validUpdate, {
+      auth: { email: savedUser.email, password: 'P4ssword' }
+    });
+
+    const inDBUser = await User.findOne({ where: { id: savedUser.id } });
+    const { uploadDir, profileDir } = config;
+    const profileImagePath = path.join(
+      '.',
+      uploadDir,
+      profileDir,
+      inDBUser.image
+    );
+
+    expect(fs.existsSync(profileImagePath)).toBe(true);
   });
 });
