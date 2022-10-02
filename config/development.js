@@ -14,5 +14,7 @@ module.exports = {
       user: 'gracie.jerde@ethereal.email',
       pass: 'ZxbyhhzSXVcmJ5Kvx6'
     }
-  }
+  },
+  uploadDir: 'uploads-dev',
+  profileDir: 'profile'
 };
