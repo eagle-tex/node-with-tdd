@@ -70,6 +70,13 @@ const putUser = async (id = 5, body = null, options = {}) => {
   return agent.send(body);
 };
 
+const readFileAsBase64 = () => {
+  // const filePath = path.join('.', '__tests__', 'resources', 'test-png.png'); // not working
+  const filePath = path.join(__dirname, 'resources', 'test-png.png');
+
+  return fs.readFileSync(filePath, { encoding: 'base64' });
+};
+
 describe('User Update', () => {
   it('returns 403 Forbidden when request sent without basic authorization', async () => {
     const response = await putUser();
@@ -164,8 +171,7 @@ describe('User Update', () => {
   });
 
   it('saves the user image when update contains image as base64', async () => {
-    const filePath = path.join(__dirname, 'resources', 'test-png.png');
-    const fileInBase64 = fs.readFileSync(filePath, { encoding: 'base64' });
+    const fileInBase64 = readFileAsBase64();
 
     const savedUser = await addUser();
     const validUpdate = { username: 'user1-updated', image: fileInBase64 };
@@ -179,8 +185,7 @@ describe('User Update', () => {
   });
 
   it('returns success body having only id, username, email and image', async () => {
-    const filePath = path.join(__dirname, 'resources', 'test-png.png');
-    const fileInBase64 = fs.readFileSync(filePath, { encoding: 'base64' });
+    const fileInBase64 = readFileAsBase64();
 
     const savedUser = await addUser();
     const validUpdate = { username: 'user1-updated', image: fileInBase64 };
@@ -197,8 +202,7 @@ describe('User Update', () => {
   });
 
   it('saves the user image to upload folder and stores filename in user when update has image', async () => {
-    const filePath = path.join(__dirname, 'resources', 'test-png.png');
-    const fileInBase64 = fs.readFileSync(filePath, { encoding: 'base64' });
+    const fileInBase64 = readFileAsBase64();
 
     const savedUser = await addUser();
     const validUpdate = { username: 'user1-updated', image: fileInBase64 };
