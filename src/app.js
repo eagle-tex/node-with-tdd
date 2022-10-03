@@ -8,6 +8,11 @@ const errorHandler = require('./error/ErrorHandler');
 const AuthenticationRouter = require('./auth/AuthenticationRouter');
 const tokenAuthentication = require('./middleware/tokenAuthentication');
 const FileService = require('./file/FileService');
+const config = require('config');
+const path = require('path');
+
+const { uploadDir, profileDir } = config;
+const profileFolder = path.join('.', uploadDir, profileDir);
 
 i18next
   .use(Backend)
@@ -32,6 +37,8 @@ const app = express();
 app.use(middleware.handle(i18next));
 
 app.use(express.json());
+
+app.use('/images', express.static(profileFolder));
 
 app.use(tokenAuthentication);
 
