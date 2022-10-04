@@ -19,5 +19,6 @@
   "unauthorized_user_delete": "Vous n'êtes pas authorizé à supprimer l'utilisateur",
   "email_not_in_use": "Adresse e-mail non trouvée",
   "password_reset_request_success": "Vérifiez votre e-mail pour réinitialiser votre mot de passe",
-  "unauthorized_password_reset": "Vous n'êtes pas autorisé à mettre à jour votre mot de passe. Veuillez suivre à nouveau les étapes de mise à jour du mot de passe"
+  "unauthorized_password_reset": "Vous n'êtes pas autorisé à mettre à jour votre mot de passe. Veuillez suivre à nouveau les étapes de mise à jour du mot de passe",
+  "profile_image_size": "Votre image de profil ne peut excéder 2 Mo"
 }
