@@ -14,6 +14,8 @@ const path = require('path');
 const { uploadDir, profileDir } = config;
 const profileFolder = path.join('.', uploadDir, profileDir);
 
+const ONE_YEAR_IN_MILLIS = 365 * 24 * 60 * 60 * 1000;
+
 i18next
   .use(Backend)
   .use(middleware.LanguageDetector)
@@ -38,7 +40,10 @@ app.use(middleware.handle(i18next));
 
 app.use(express.json());
 
-app.use('/images', express.static(profileFolder));
+app.use(
+  '/images',
+  express.static(profileFolder, { maxAge: ONE_YEAR_IN_MILLIS })
+);
 
 app.use(tokenAuthentication);
 
