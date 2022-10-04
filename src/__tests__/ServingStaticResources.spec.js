@@ -23,4 +23,17 @@ describe('Profile Images', () => {
 
     expect(response.status).toBe(200);
   });
+
+  it('returns cache for 1 year in response', async () => {
+    const filePath = path.join(__dirname, 'resources', 'test-png.png');
+    const storedFileName = 'test-file';
+    const targetPath = path.join(profileFolder, storedFileName);
+    fs.copyFileSync(filePath, targetPath);
+    const response = await request(app).get(`/images/${storedFileName}`);
+    const oneYearInSeconds = 365 * 24 * 60 * 60;
+
+    expect(response.header['cache-control']).toContain(
+      `max-age=${oneYearInSeconds}`
+    );
+  });
 });
