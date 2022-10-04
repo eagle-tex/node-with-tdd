@@ -229,4 +229,27 @@ describe('User Update', () => {
 
     expect(fs.existsSync(profileImagePath)).toBe(false);
   });
+
+  it.each`
+    language | value             | message
+    ${'en'}  | ${null}           | ${en.username_null}
+    ${'en'}  | ${'usr'}          | ${en.username_size}
+    ${'en'}  | ${'a'.repeat(33)} | ${en.username_size}
+    ${'fr'}  | ${null}           | ${fr.username_null}
+    ${'fr'}  | ${'usr'}          | ${fr.username_size}
+    ${'fr'}  | ${'a'.repeat(33)} | ${fr.username_size}
+  `(
+    'returns Bad Request with "$message" when username is updated with "$value" and language is set as $language',
+    async ({ language, value, message }) => {
+      const savedUser = await addUser();
+      const invalidUpdate = { username: value };
+      const response = await putUser(savedUser.id, invalidUpdate, {
+        auth: { email: savedUser.email, password: 'P4ssword' },
+        language
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.body.validationErrors.username).toBe(message);
+    }
+  );
 });
