@@ -1,5 +1,6 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
+const FileType = require('file-type');
 
 const UserService = require('./UserService');
 const ValidationException = require('../error/ValidationException');
@@ -88,7 +89,7 @@ router.put(
     .bail()
     .isLength({ min: 4, max: 32 })
     .withMessage('username_size'),
-  check('image').custom((imageAsBase64String) => {
+  check('image').custom(async (imageAsBase64String) => {
     if (!imageAsBase64String) {
       return true;
     }
@@ -96,6 +97,14 @@ router.put(
     if (buffer.length > 2 * 1024 * 1024) {
       throw new Error('profile_image_size');
     }
+
+    // check file type
+    const type = await FileType.fromBuffer(buffer);
+    console.log({ type });
+    if (type.mime !== 'image/png') {
+      throw new Error();
+    }
+
     return true;
   }),
   async (req, res, next) => {
