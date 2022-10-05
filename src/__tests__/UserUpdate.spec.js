@@ -332,6 +332,10 @@ describe('User Update', () => {
   it.each`
     file              | status
     ${'test-gif.gif'} | ${400}
+    ${'test-pdf.pdf'} | ${400}
+    ${'test-txt.txt'} | ${400}
+    ${'test-png.png'} | ${200}
+    ${'test-jpg.jpg'} | ${200}
   `(
     'returns $status when uploading $file as image',
     async ({ file, status }) => {
