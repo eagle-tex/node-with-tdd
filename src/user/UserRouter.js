@@ -100,9 +100,9 @@ router.put(
 
     // check file type
     const type = await FileType.fromBuffer(buffer);
-    console.log({ type });
+
     if (!type || (type.mime !== 'image/png' && type.mime !== 'image/jpeg')) {
-      throw new Error();
+      throw new Error('unsupported_image_file');
     }
 
     return true;
