@@ -349,4 +349,27 @@ describe('User Update', () => {
       expect(response.status).toBe(status);
     }
   );
+
+  it.each`
+    file              | language | message
+    ${'test-gif.gif'} | ${'en'}  | ${en.unsupported_image_file}
+    ${'test-pdf.pdf'} | ${'en'}  | ${en.unsupported_image_file}
+    ${'test-txt.txt'} | ${'en'}  | ${en.unsupported_image_file}
+    ${'test-gif.gif'} | ${'fr'}  | ${fr.unsupported_image_file}
+    ${'test-pdf.pdf'} | ${'fr'}  | ${fr.unsupported_image_file}
+    ${'test-txt.txt'} | ${'fr'}  | ${fr.unsupported_image_file}
+  `(
+    'returns "$message" when uploading $file as image when language is $language',
+    async ({ file, language, message }) => {
+      const fileInBase64 = readFileAsBase64(file);
+      const savedUser = await addUser();
+      const updateBody = { username: 'user1-updated', image: fileInBase64 };
+      const response = await putUser(savedUser.id, updateBody, {
+        auth: { email: savedUser.email, password: 'P4ssword' },
+        language
+      });
+
+      expect(response.body.validationErrors.image).toBe(message);
+    }
+  );
 });
