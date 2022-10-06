@@ -1,11 +1,11 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
-const FileType = require('file-type');
 
 const UserService = require('./UserService');
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
 const ForbiddenException = require('../error/ForbiddenException');
+const FileService = require('../file/FileService');
 
 const router = express.Router();
 
@@ -81,18 +81,6 @@ router.get('/api/1.0/users/:id', async (req, res, next) => {
   }
 });
 
-const isLessThan2MB = (buffer) => {
-  return buffer.length < 2 * 1024 * 1024;
-};
-
-const isSupportedFileType = async (buffer) => {
-  const type = await FileType.fromBuffer(buffer);
-
-  return !type
-    ? false
-    : type.mime === 'image/png' || type.mime === 'image/jpeg';
-};
-
 router.put(
   '/api/1.0/users/:id',
   check('username')
@@ -106,12 +94,12 @@ router.put(
       return true;
     }
     const buffer = Buffer.from(imageAsBase64String, 'base64');
-    if (!isLessThan2MB(buffer)) {
+    if (!FileService.isLessThan2MB(buffer)) {
       throw new Error('profile_image_size');
     }
 
     // check file type
-    const supportedType = await isSupportedFileType(buffer);
+    const supportedType = await FileService.isSupportedFileType(buffer);
 
     if (!supportedType) {
       throw new Error('unsupported_image_file');
