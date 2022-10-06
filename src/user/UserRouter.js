@@ -81,6 +81,24 @@ router.get('/api/1.0/users/:id', async (req, res, next) => {
   }
 });
 
+const isLessThen2MB = (buffer) => {
+  return buffer.length < 2 * 1024 * 1024;
+};
+
+const isSupportedFileType = async (buffer) => {
+  const type = await FileType.fromBuffer(buffer);
+
+  // if type is undefined return false
+  if (!type) {
+    return false;
+  }
+
+  if (type.mime === 'image/png' || type.mime === 'image/jpeg') {
+    return true;
+  }
+  return false;
+};
+
 router.put(
   '/api/1.0/users/:id',
   check('username')
@@ -94,14 +112,14 @@ router.put(
       return true;
     }
     const buffer = Buffer.from(imageAsBase64String, 'base64');
-    if (buffer.length > 2 * 1024 * 1024) {
+    if (!isLessThen2MB(buffer)) {
       throw new Error('profile_image_size');
     }
 
     // check file type
-    const type = await FileType.fromBuffer(buffer);
+    const supportedType = await isSupportedFileType(buffer);
 
-    if (!type || (type.mime !== 'image/png' && type.mime !== 'image/jpeg')) {
+    if (!supportedType) {
       throw new Error('unsupported_image_file');
     }
 
