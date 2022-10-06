@@ -81,7 +81,7 @@ router.get('/api/1.0/users/:id', async (req, res, next) => {
   }
 });
 
-const isLessThen2MB = (buffer) => {
+const isLessThan2MB = (buffer) => {
   return buffer.length < 2 * 1024 * 1024;
 };
 
@@ -106,7 +106,7 @@ router.put(
       return true;
     }
     const buffer = Buffer.from(imageAsBase64String, 'base64');
-    if (!isLessThen2MB(buffer)) {
+    if (!isLessThan2MB(buffer)) {
       throw new Error('profile_image_size');
     }
 
