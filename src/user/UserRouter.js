@@ -88,15 +88,9 @@ const isLessThen2MB = (buffer) => {
 const isSupportedFileType = async (buffer) => {
   const type = await FileType.fromBuffer(buffer);
 
-  // if type is undefined return false
-  if (!type) {
-    return false;
-  }
-
-  if (type.mime === 'image/png' || type.mime === 'image/jpeg') {
-    return true;
-  }
-  return false;
+  return !type
+    ? false
+    : type.mime === 'image/png' || type.mime === 'image/jpeg';
 };
 
 router.put(
