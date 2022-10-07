@@ -36,7 +36,9 @@ beforeAll(async () => {
 
   server.listen(config.mail.port, 'localhost'); // await ?
 
-  await sequelize.sync();
+  if (process.env.NODE_ENV === 'test') {
+    await sequelize.sync();
+  }
   // to make all tests use the same timeout,
   // we set the timeout to 20 seconds at the end of beforeAll
   jest.setTimeout(20000);

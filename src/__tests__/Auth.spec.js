@@ -8,7 +8,9 @@ const fr = require('../../locales/fr/translation.json');
 const Token = require('../auth/Token');
 
 beforeAll(async () => {
-  await sequelize.sync();
+  if (process.env.NODE_ENV === 'test') {
+    await sequelize.sync();
+  }
 });
 
 beforeEach(async () => {
