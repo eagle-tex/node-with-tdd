@@ -14,11 +14,8 @@ describe('createFolders', () => {
 
   it('creates profile folder under upload folder', () => {
     FileService.createFolders();
-    // const testFolder = path.join(__dirname, '..', '..', 'upload', 'profile');
-    // console.log({ testFolder });
 
     const profileFolder = path.join('.', uploadDir, profileDir);
-    console.log({ profileFolder });
 
     expect(fs.existsSync(profileFolder)).toBe(true);
   });
