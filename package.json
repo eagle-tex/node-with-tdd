@@ -13,7 +13,10 @@
     "prepare": "husky install",
     "start": "cross-env NODE_ENV=development nodemon index",
     "test": "cross-env NODE_ENV=test jest --watch --verbose",
-    "posttest": "cross-env NODE_ENV=test node test-cleanup"
+    "posttest": "cross-env NODE_ENV=test node test-cleanup",
+    "test:staging": "cross-env NODE_ENV=staging jest --all --runInBand",
+    "migrate:test": "cross-env NODE_ENV=staging sequelize-cli db:migrate",
+    "pretest:staging": "yarn migrate:test"
   },
   "keywords": [],
   "author": "",
