@@ -3,7 +3,7 @@
     "username": "my-db-user",
     "password": "db-p4ss",
     "database": "hoaxify",
-    "host": "localhost", // or 127.0.0.1
+    "host": "localhost",
     "dialect": "sqlite",
     "storage": "./database.sqlite"
   }
