@@ -23,7 +23,7 @@
       1,
       {
         "ignoreRestSiblings": true,
-        "argsIgnorePattern": "req|res|next|^err"
+        "argsIgnorePattern": "req|res|next|^err,|^_"
       }
     ],
     "prettier/prettier": "warn" // warn for prettier errors
