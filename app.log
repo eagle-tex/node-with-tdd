@@ -1,0 +1,11 @@
+{"level":"error","message":"error"}
+{"level":"warn","message":"warn"}
+{"level":"info","message":"info"}
+{"level":"verbose","message":"verbose"}
+{"level":"debug","message":"debug"}
+{"level":"info","message":"App running on PORT 3000"}
+{"level":"error","message":"error"}
+2022-10-08T07:21:27.998Z error error
+2022-10-08T07:22:35.064Z [error] : error
+2022-10-08T07:23:09.292Z [error  ] : error
+2022-10-08T07:23:35.089Z [ERROR  ] : error
