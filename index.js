@@ -9,6 +9,13 @@ sequelize.sync();
 
 TokenService.scheduleCleanup();
 
+logger.error('error');
+logger.warn('warn');
+logger.info('info');
+logger.verbose('verbose');
+logger.debug('debug');
+logger.silly('silly');
+
 app.listen(port, () => {
   logger.info(`App running on PORT ${port}`);
 });
