@@ -8,13 +8,17 @@ const customFormat = format.combine(
     }`;
   })
 );
+
+const destinations = [new transports.Console()];
+if (process.env.NODE_ENV === 'production') {
+  destinations.push(new transports.File({ filename: 'app.log' }));
+}
+
 const logger = createLogger({
-  transports: [
-    new transports.Console({ level: 'silly' }),
-    new transports.File({ filename: 'app.log', level: 'error' })
-  ],
+  transports: destinations,
   level: 'debug',
-  format: customFormat
+  format: customFormat,
+  silent: process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'staging'
 });
 
 module.exports = logger;
