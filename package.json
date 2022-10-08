@@ -15,10 +15,8 @@
     "test": "cross-env NODE_ENV=test jest --watch --verbose",
     "posttest": "cross-env NODE_ENV=test yarn clean-up",
     "clean-up": "node test-cleanup",
-    "test:staging": "cross-env NODE_ENV=staging jest --all --runInBand --forceExit",
-    "migrate:test": "cross-env NODE_ENV=staging sequelize-cli db:migrate",
-    "pretest:staging": "yarn migrate:test",
-    "posttest:staging": "cross-env NODE_ENV=staging yarn clean-up"
+    "test:staging": "cross-env NODE_ENV=staging yarn migrate && cross-env NODE_ENV=staging jest --all --runInBand --forceExit && cross-env NODE_ENV=staging yarn clean-up",
+    "migrate": "sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
