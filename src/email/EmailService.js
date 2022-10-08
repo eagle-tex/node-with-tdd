@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const transporter = require('../config/emailTransporter');
+const logger = require('../shared/logger');
 
 const sendAccountActivation = async (email, token) => {
   // await is IMPORTANT on next line: it "forces" to wait for email to be sent
@@ -21,7 +22,7 @@ const sendAccountActivation = async (email, token) => {
   });
 
   if (process.env.NODE_ENV === 'development') {
-    console.log(`url: ${nodemailer.getTestMessageUrl(info)}`);
+    logger.info(`url: ${nodemailer.getTestMessageUrl(info)}`);
   }
 };
 
@@ -44,7 +45,7 @@ const sendPasswordReset = async (email, token) => {
   });
 
   if (process.env.NODE_ENV === 'development') {
-    console.log(`url: ${nodemailer.getTestMessageUrl(info)}`);
+    logger.info(`url: ${nodemailer.getTestMessageUrl(info)}`);
   }
 };
 
