@@ -21,9 +21,9 @@ const sendAccountActivation = async (email, token) => {
     `
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    logger.info(`url: ${nodemailer.getTestMessageUrl(info)}`);
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  logger.info(`url: ${nodemailer.getTestMessageUrl(info)}`);
+  // }
 };
 
 const sendPasswordReset = async (email, token) => {
@@ -44,9 +44,9 @@ const sendPasswordReset = async (email, token) => {
     `
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    logger.info(`url: ${nodemailer.getTestMessageUrl(info)}`);
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  logger.info(`url: ${nodemailer.getTestMessageUrl(info)}`);
+  // }
 };
 
 module.exports = { sendAccountActivation, sendPasswordReset };
