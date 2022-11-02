@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
 const request = require('supertest');
-const app = require('../src/app');
 
-const User = require('../src/user/User');
+const app = require('../src/app');
+const Hoax = require('../src/hoax/Hoax');
 const sequelize = require('../src/config/database');
+const User = require('../src/user/User');
+
 const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
 
@@ -14,6 +16,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  // Hoax has no cascading relationship with another model yet
+  // It is therefore OK to go with `{truncate: true}` for now
+  await Hoax.destroy({ truncate: true });
   // NOTE: because we included `userId` field as a foreignKey in User-Token
   // relationship, the `{ truncate: true }` option would not be valid anymore
   // the database will not allow a `{ truncate: true }`.
@@ -94,5 +99,13 @@ describe('Post Hoax', () => {
     );
 
     expect(response.status).toBe(200);
+  });
+
+  it('saves the hoax to database when authorized user sends valid request', async () => {
+    await addUser();
+    await postHoax({ content: 'Hoax content' }, { auth: credentials });
+    const hoaxes = await Hoax.findAll();
+
+    expect(hoaxes.length).toBe(1);
   });
 });
