@@ -28,6 +28,8 @@ const activeUser = {
   inactive: false
 };
 
+const credentials = { email: 'user1@mail.com', password: 'P4ssword' };
+
 const addUser = async (user = { ...activeUser }) => {
   const hash = await bcrypt.hash(user.password, 10);
   user.password = hash;
@@ -91,9 +93,7 @@ describe('User Delete', () => {
       email: 'user2@mail.com'
     });
 
-    const token = await auth({
-      auth: { email: 'user1@mail.com', password: 'P4ssword' }
-    });
+    const token = await auth({ auth: credentials });
 
     const response = await deleteUser(userToBedeleted.id, {
       token: token
@@ -110,9 +110,7 @@ describe('User Delete', () => {
 
   it('returns 200 OK when valid delete request sent from authorized user', async () => {
     const savedUser = await addUser();
-    const token = await auth({
-      auth: { email: 'user1@mail.com', password: 'P4ssword' }
-    });
+    const token = await auth({ auth: credentials });
     const response = await deleteUser(savedUser.id, {
       token: token
     });
@@ -122,9 +120,7 @@ describe('User Delete', () => {
 
   it('deletes user from database when request sent from authorized user', async () => {
     const savedUser = await addUser();
-    const token = await auth({
-      auth: { email: 'user1@mail.com', password: 'P4ssword' }
-    });
+    const token = await auth({ auth: credentials });
     await deleteUser(savedUser.id, {
       token: token
     });
@@ -136,9 +132,7 @@ describe('User Delete', () => {
 
   it('deletes token from database when delete user request sent from authorized user', async () => {
     const savedUser = await addUser();
-    const token = await auth({
-      auth: { email: 'user1@mail.com', password: 'P4ssword' }
-    });
+    const token = await auth({ auth: credentials });
     await deleteUser(savedUser.id, {
       token: token
     });
@@ -150,12 +144,8 @@ describe('User Delete', () => {
 
   it('deletes all tokens from database when delete user request sent from authorized user', async () => {
     const savedUser = await addUser();
-    const token1 = await auth({
-      auth: { email: 'user1@mail.com', password: 'P4ssword' }
-    });
-    const token2 = await auth({
-      auth: { email: 'user1@mail.com', password: 'P4ssword' }
-    });
+    const token1 = await auth({ auth: credentials });
+    const token2 = await auth({ auth: credentials });
     await deleteUser(savedUser.id, {
       token: token1
     });

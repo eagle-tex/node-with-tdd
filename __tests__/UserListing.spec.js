@@ -31,6 +31,8 @@ const auth = async (options = {}) => {
   return token;
 };
 
+const credentials = { email: 'user1@mail.com', password: 'P4ssword' };
+
 const getUsers = (options = {}) => {
   const agent = request(app).get('/api/1.0/users');
 
@@ -149,9 +151,7 @@ describe('Listing Users', () => {
 
   it('returns user page without logged in user when request has valid authorization', async () => {
     await addUsers(11);
-    const token = await auth({
-      auth: { email: 'user1@mail.com', password: 'P4ssword' }
-    });
+    const token = await auth({ auth: credentials });
     const response = await getUsers({ token });
 
     expect(response.body.totalPages).toBe(1); // = 11 users - 1 current user = 10 (=1 page)
