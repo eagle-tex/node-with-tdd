@@ -28,6 +28,8 @@ const activeUser = {
   inactive: false
 };
 
+const credentials = { email: 'user1@mail.com', password: 'P4ssword' };
+
 const addUser = async (user = { ...activeUser }) => {
   const hash = await bcrypt.hash(user.password, 10);
   user.password = hash;
@@ -88,7 +90,7 @@ describe('Post Hoax', () => {
     await addUser();
     const response = await postHoax(
       { content: 'Hoax content' },
-      { auth: { email: 'user1@mail.com', password: 'P4ssword' } }
+      { auth: credentials }
     );
 
     expect(response.status).toBe(200);
