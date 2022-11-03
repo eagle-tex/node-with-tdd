@@ -120,4 +120,21 @@ describe('Post Hoax', () => {
     expect(savedHoax.timestamp).toBeGreaterThan(beforeSubmit);
     expect(savedHoax.timestamp).toBeLessThan(Date.now());
   });
+
+  it.each`
+    language | message
+    ${'en'}  | ${en.hoax_submit_success}
+    ${'fr'}  | ${fr.hoax_submit_success}
+  `(
+    `returns "$message" to success submit when language is $language`,
+    async ({ language, message }) => {
+      await addUser();
+      const response = await postHoax(
+        { content: 'Hoax content' },
+        { auth: credentials, language }
+      );
+
+      expect(response.body.message).toBe(message);
+    }
+  );
 });
