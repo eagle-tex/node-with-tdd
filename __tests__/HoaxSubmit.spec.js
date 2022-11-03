@@ -108,4 +108,16 @@ describe('Post Hoax', () => {
 
     expect(hoaxes.length).toBe(1);
   });
+
+  it('saves the hoax content and timestamp to database', async () => {
+    await addUser();
+    const beforeSubmit = Date.now();
+    await postHoax({ content: 'Hoax content' }, { auth: credentials });
+    const hoaxes = await Hoax.findAll();
+    const savedHoax = hoaxes[0];
+
+    expect(savedHoax.content).toBe('Hoax content');
+    expect(savedHoax.timestamp).toBeGreaterThan(beforeSubmit);
+    expect(savedHoax.timestamp).toBeLessThan(Date.now());
+  });
 });
