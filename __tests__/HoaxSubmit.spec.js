@@ -16,9 +16,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  // Hoax has no cascading relationship with another model yet
-  // It is therefore OK to go with `{truncate: true}` for now
-  await Hoax.destroy({ truncate: true });
   // NOTE: because we included `userId` field as a foreignKey in User-Token
   // relationship, the `{ truncate: true }` option would not be valid anymore
   // the database will not allow a `{ truncate: true }`.
