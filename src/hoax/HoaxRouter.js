@@ -20,7 +20,7 @@ router.post(
       return next(new ValidationException(errors.array()));
     }
 
-    await HoaxService.save(req.body);
+    await HoaxService.save(req.body, req.authenticatedUser);
     return res.send({ message: req.t('hoax_submit_success') });
   }
 );
