@@ -174,4 +174,25 @@ describe('Post Hoax', () => {
       'validationErrors'
     ]);
   });
+
+  it.each`
+    language | content             | descriptionOfContent | message
+    ${'en'}  | ${null}             | ${'null'}            | ${en.hoax_content_size}
+    ${'en'}  | ${'a'.repeat(9)}    | ${'short'}           | ${en.hoax_content_size}
+    ${'en'}  | ${'a'.repeat(5001)} | ${'very long'}       | ${en.hoax_content_size}
+    ${'fr'}  | ${null}             | ${'null'}            | ${fr.hoax_content_size}
+    ${'fr'}  | ${'a'.repeat(9)}    | ${'short'}           | ${fr.hoax_content_size}
+    ${'fr'}  | ${'a'.repeat(5001)} | ${'very long'}       | ${fr.hoax_content_size}
+  `(
+    `returns "$message" when the content is $descriptionOfContent and language is $language`,
+    async ({ language, content, message }) => {
+      await addUser();
+      const response = await postHoax(
+        { content: content },
+        { auth: credentials, language }
+      );
+
+      expect(response.body.validationErrors.content).toBe(message);
+    }
+  );
 });
