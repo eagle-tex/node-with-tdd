@@ -137,4 +137,22 @@ describe('Post Hoax', () => {
       expect(response.body.message).toBe(message);
     }
   );
+
+  it.each`
+    language | message
+    ${'en'}  | ${en.validation_failure}
+    ${'fr'}  | ${fr.validation_failure}
+  `(
+    `returns 400 Bad Request and "$message" when hoax content is less than 10 characters and language is $language`,
+    async ({ language, message }) => {
+      await addUser();
+      const response = await postHoax(
+        { content: '123456789' },
+        { auth: credentials, language }
+      );
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe(message);
+    }
+  );
 });
