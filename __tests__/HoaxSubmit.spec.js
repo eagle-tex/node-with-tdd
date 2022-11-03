@@ -155,4 +155,23 @@ describe('Post Hoax', () => {
       expect(response.body.message).toBe(message);
     }
   );
+
+  it('returns validation error body when an invalid hoax is posted by authorized user', async () => {
+    await addUser();
+    const nowInMillis = Date.now();
+    const response = await postHoax(
+      { content: '123456789' },
+      { auth: credentials }
+    );
+    const error = response.body;
+
+    expect(error.path).toBe('/api/1.0/hoaxes');
+    expect(error.timestamp).toBeGreaterThan(nowInMillis);
+    expect(Object.keys(error)).toEqual([
+      'path',
+      'timestamp',
+      'message',
+      'validationErrors'
+    ]);
+  });
 });
