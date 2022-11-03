@@ -9,6 +9,9 @@ Hoax.init(
   {
     content: {
       type: Sequelize.STRING
+    },
+    timestamp: {
+      type: Sequelize.BIGINT
     }
   },
   {
