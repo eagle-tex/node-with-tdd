@@ -7,7 +7,9 @@ const ValidationException = require('../error/ValidationException');
 
 router.post(
   '/api/1.0/hoaxes',
-  check('content').isLength({ min: 10 }),
+  check('content')
+    .isLength({ min: 10, max: 5000 })
+    .withMessage('hoax_content_size'),
   async (req, res, next) => {
     if (!req.authenticatedUser) {
       next(new AuthenticationException('unauthorized_hoax_submit'));
