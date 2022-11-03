@@ -195,4 +195,13 @@ describe('Post Hoax', () => {
       expect(response.body.validationErrors.content).toBe(message);
     }
   );
+
+  it('stores hoax owner id in database', async () => {
+    const user = await addUser();
+    await postHoax({ content: 'Hoax content' }, { auth: credentials });
+    const hoaxes = await Hoax.findAll();
+    const hoax = hoaxes[0];
+
+    expect(hoax.userId).toBe(user.id);
+  });
 });
