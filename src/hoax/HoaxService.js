@@ -1,5 +1,6 @@
 const Hoax = require('./Hoax');
 const User = require('../user/User');
+const NotFoundException = require('../error/NotFoundException');
 
 const save = async (body, user) => {
   const hoax = {
@@ -31,4 +32,12 @@ const getHoaxes = async (page, size) => {
   };
 };
 
-module.exports = { save, getHoaxes };
+const getHoaxesOfUser = async (userId) => {
+  const user = await User.findOne({ where: { id: userId } });
+
+  if (!user) {
+    throw new NotFoundException();
+  }
+};
+
+module.exports = { save, getHoaxes, getHoaxesOfUser };
