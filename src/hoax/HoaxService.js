@@ -1,4 +1,5 @@
 const Hoax = require('./Hoax');
+const User = require('../user/User');
 
 const save = async (body, user) => {
   const hoax = {
@@ -11,6 +12,12 @@ const save = async (body, user) => {
 
 const getHoaxes = async (page, size) => {
   const hoaxesWithCount = await Hoax.findAndCountAll({
+    attributes: ['id', 'content', 'timestamp'],
+    include: {
+      model: User,
+      as: 'user',
+      attributes: ['id', 'username', 'email', 'image']
+    },
     limit: size,
     offset: page * size
   });
