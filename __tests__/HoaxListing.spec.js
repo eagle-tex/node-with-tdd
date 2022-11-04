@@ -84,8 +84,6 @@ describe('Listing All Hoaxes', () => {
   it('returns second page hoaxes and page indicator when page is set as 1 in request parameter', async () => {
     await addHoaxes(11);
     const response = await getHoaxes().query({ page: 1 });
-    // alternative way of querying 'page 1'
-    // const response = await request(app).get('/api/1.0/users?page=1');
 
     expect(response.body.content[0].content).toBe('hoax content 1');
     expect(response.body.page).toBe(1);
@@ -209,6 +207,7 @@ describe('Listing Hoaxes of a User', () => {
 
     expect(response.body.content.length).toBe(10);
   });
+
   it('returns 5 hoaxes belonging to user in page content when there are 11 hoaxes total for two users', async () => {
     const user = await addUser();
     await addHoaxes(5, user.id);
@@ -217,5 +216,91 @@ describe('Listing Hoaxes of a User', () => {
 
     const response = await getHoaxes(user.id);
     expect(response.body.content.length).toBe(5);
+  });
+
+  it('returns only id, content, timestamp and user object having id, username, email and image in content array for each hoax', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id);
+    const hoax = response.body.content[0];
+    const hoaxKeys = Object.keys(hoax);
+    const userKeys = Object.keys(hoax.user);
+
+    expect(hoaxKeys).toEqual(['id', 'content', 'timestamp', 'user']);
+    expect(userKeys).toEqual(['id', 'username', 'email', 'image']);
+  });
+
+  it('returns 2 as totalPages when there are 11 hoaxes', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id);
+
+    expect(response.body.totalPages).toBe(2);
+  });
+
+  it('returns second page hoaxes and page indicator when page is set as 1 in request parameter', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id).query({ page: 1 });
+
+    expect(response.body.content[0].content).toBe('hoax content 1');
+    expect(response.body.page).toBe(1);
+  });
+
+  it('returns first page hoaxes when page is below 0 in request parameter', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id).query({ page: -5 });
+
+    expect(response.body.page).toBe(0);
+  });
+
+  it('returns 5 hoaxes and corresponding size indicator when size is set to 5 in request parameter', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id).query({ size: 5 });
+
+    expect(response.body.content.length).toBe(5);
+    expect(response.body.size).toBe(5);
+  });
+
+  it('returns 10 hoaxes and corresponding size indicator when size is set as 1000', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id).query({ size: 1000 });
+
+    expect(response.body.content.length).toBe(10);
+    expect(response.body.size).toBe(10);
+  });
+
+  it('returns 10 hoaxes and corresponding size indicator when size is set as 0', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id).query({ size: 0 });
+
+    expect(response.body.content.length).toBe(10);
+    expect(response.body.size).toBe(10);
+  });
+
+  it('returns page as 0 and size as 10 when non numeric query params provided for both', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id).query({
+      size: 'size',
+      page: 'page'
+    });
+
+    expect(response.body.size).toBe(10);
+    expect(response.body.page).toBe(0);
+  });
+
+  it('returns hoaxes ordered from new to old', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id);
+    const firstHoax = response.body.content[0];
+    const lastHoax = response.body.content[9];
+
+    expect(firstHoax.timestamp).toBeGreaterThan(lastHoax.timestamp);
   });
 });
