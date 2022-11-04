@@ -142,7 +142,7 @@ describe('Listing All Hoaxes', () => {
 
 describe('Listing Hoaxes of a User', () => {
   const getHoaxes = (id) => {
-    const agent = request(app).get(`/api/1.0/users/:${id}/hoaxes`);
+    const agent = request(app).get(`/api/1.0/users/${id}/hoaxes`);
     return agent;
   };
 
