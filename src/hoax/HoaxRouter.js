@@ -2,7 +2,7 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const router = express.Router();
 const AuthenticationException = require('../auth/AuthenticationException');
-const HoaxService = require('./HoaxService');
+const HoaxService = require('../hoax/HoaxService');
 const pagination = require('../middleware/pagination');
 const ValidationException = require('../error/ValidationException');
 
@@ -33,8 +33,13 @@ router.get('/api/1.0/hoaxes', pagination, async (req, res) => {
   res.send(hoaxes);
 });
 
-router.get('/api/1.0/users/:userId/hoaxes', (_req, res) => {
-  res.send();
+router.get('/api/1.0/users/:userId/hoaxes', async (req, res, next) => {
+  try {
+    await HoaxService.getHoaxesOfUser(req.params.userId);
+    res.send();
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
