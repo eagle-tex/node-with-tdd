@@ -35,8 +35,8 @@ router.get('/api/1.0/hoaxes', pagination, async (req, res) => {
 
 router.get('/api/1.0/users/:userId/hoaxes', async (req, res, next) => {
   try {
-    await HoaxService.getHoaxesOfUser(req.params.userId);
-    res.send();
+    const hoaxes = await HoaxService.getHoaxesOfUser(req.params.userId);
+    res.send(hoaxes);
   } catch (err) {
     next(err);
   }
