@@ -40,12 +40,13 @@ const getHoaxesOfUser = async (userId, page, size) => {
   }
 
   const hoaxesWithCount = await Hoax.findAndCountAll({
-    where: { userId: userId }, // first way used
+    // where: { userId: userId }, // first way used
     attributes: ['id', 'content', 'timestamp'],
     include: {
       model: User,
       as: 'user',
-      attributes: ['id', 'username', 'email', 'image']
+      attributes: ['id', 'username', 'email', 'image'],
+      where: { id: userId } // seconday way (alternative to first way)
     },
     order: [['id', 'DESC']],
     limit: size,
