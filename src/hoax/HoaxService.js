@@ -36,7 +36,7 @@ const getHoaxesOfUser = async (userId) => {
   const user = await User.findOne({ where: { id: userId } });
 
   if (!user) {
-    throw new NotFoundException();
+    throw new NotFoundException('user_not_found');
   }
 };
 
