@@ -158,4 +158,9 @@ describe('Listing Hoaxes of a User', () => {
     const response = await getHoaxes(user.id);
     expect(response.status).toBe(200);
   });
+
+  it('returns 404 Not Found when user does not exist', async () => {
+    const response = await getHoaxes(5);
+    expect(response.status).toBe(404);
+  });
 });
