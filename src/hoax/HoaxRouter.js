@@ -33,13 +33,23 @@ router.get('/api/1.0/hoaxes', pagination, async (req, res) => {
   res.send(hoaxes);
 });
 
-router.get('/api/1.0/users/:userId/hoaxes', async (req, res, next) => {
-  try {
-    const hoaxes = await HoaxService.getHoaxesOfUser(req.params.userId);
-    res.send(hoaxes);
-  } catch (err) {
-    next(err);
+router.get(
+  '/api/1.0/users/:userId/hoaxes',
+  pagination,
+  async (req, res, next) => {
+    const { page, size } = req.pagination;
+
+    try {
+      const hoaxes = await HoaxService.getHoaxesOfUser(
+        req.params.userId,
+        page,
+        size
+      );
+      res.send(hoaxes);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 module.exports = router;
