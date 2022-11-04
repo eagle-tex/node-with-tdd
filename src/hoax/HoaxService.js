@@ -32,18 +32,30 @@ const getHoaxes = async (page, size) => {
   };
 };
 
-const getHoaxesOfUser = async (userId) => {
+const getHoaxesOfUser = async (userId, page, size) => {
   const user = await User.findOne({ where: { id: userId } });
 
   if (!user) {
     throw new NotFoundException('user_not_found');
   }
 
+  const hoaxesWithCount = await Hoax.findAndCountAll({
+    attributes: ['id', 'content', 'timestamp'],
+    include: {
+      model: User,
+      as: 'user',
+      attributes: ['id', 'username', 'email', 'image']
+    },
+    order: [['id', 'DESC']],
+    limit: size,
+    offset: page * size
+  });
+
   return {
-    content: [],
-    page: 0,
-    size: 10,
-    totalPages: 0
+    content: hoaxesWithCount.rows,
+    page,
+    size,
+    totalPages: Math.ceil(hoaxesWithCount.count / size)
   };
 };
 
