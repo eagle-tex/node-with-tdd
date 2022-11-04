@@ -11,32 +11,17 @@ const save = async (body, user) => {
   await Hoax.create(hoax);
 };
 
-const getHoaxes = async (page, size) => {
-  const hoaxesWithCount = await Hoax.findAndCountAll({
-    attributes: ['id', 'content', 'timestamp'],
-    include: {
-      model: User,
-      as: 'user',
-      attributes: ['id', 'username', 'email', 'image']
-    },
-    order: [['id', 'DESC']],
-    limit: size,
-    offset: page * size
-  });
+const getHoaxes = async (page, size, userId) => {
+  let where = {};
 
-  return {
-    content: hoaxesWithCount.rows,
-    page,
-    size,
-    totalPages: Math.ceil(hoaxesWithCount.count / size)
-  };
-};
+  if (userId) {
+    const user = await User.findOne({ where: { id: userId } });
 
-const getHoaxesOfUser = async (userId, page, size) => {
-  const user = await User.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('user_not_found');
+    }
 
-  if (!user) {
-    throw new NotFoundException('user_not_found');
+    where = { id: userId };
   }
 
   const hoaxesWithCount = await Hoax.findAndCountAll({
@@ -45,9 +30,7 @@ const getHoaxesOfUser = async (userId, page, size) => {
       model: User,
       as: 'user',
       attributes: ['id', 'username', 'email', 'image'],
-      // NOTE: no way is better than the other. Just pay attention to
-      // the property used in the `where` clause (1-'userId' or 2-'id')
-      where: { id: userId } // seconday way (alternative to first way)
+      where: where
     },
     order: [['id', 'DESC']],
     limit: size,
@@ -62,4 +45,4 @@ const getHoaxesOfUser = async (userId, page, size) => {
   };
 };
 
-module.exports = { save, getHoaxes, getHoaxesOfUser };
+module.exports = { save, getHoaxes };
