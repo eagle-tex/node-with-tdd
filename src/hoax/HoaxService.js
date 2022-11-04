@@ -9,4 +9,18 @@ const save = async (body, user) => {
   await Hoax.create(hoax);
 };
 
-module.exports = { save };
+const getHoaxes = async (page, size) => {
+  const hoaxesWithCount = await Hoax.findAndCountAll({
+    limit: size,
+    offset: page * size
+  });
+
+  return {
+    content: hoaxesWithCount.rows,
+    page,
+    size,
+    totalPages: Math.ceil(hoaxesWithCount.count / size)
+  };
+};
+
+module.exports = { save, getHoaxes };
