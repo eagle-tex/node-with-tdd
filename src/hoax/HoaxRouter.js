@@ -40,11 +40,7 @@ router.get(
     const { page, size } = req.pagination;
 
     try {
-      const hoaxes = await HoaxService.getHoaxesOfUser(
-        req.params.userId,
-        page,
-        size
-      );
+      const hoaxes = await HoaxService.getHoaxes(page, size, req.params.userId);
       res.send(hoaxes);
     } catch (err) {
       next(err);
