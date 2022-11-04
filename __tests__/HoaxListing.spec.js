@@ -146,10 +146,10 @@ describe('Listing Hoaxes of a User', () => {
     return agent;
   };
 
-  const addUser = async () => {
+  const addUser = async (name = 'user1') => {
     return await User.create({
-      username: 'user1',
-      email: 'user1@mail.com'
+      username: name,
+      email: `${name}@mail.com`
     });
   };
 
@@ -208,5 +208,14 @@ describe('Listing Hoaxes of a User', () => {
     const response = await getHoaxes(user.id);
 
     expect(response.body.content.length).toBe(10);
+  });
+  it('returns 5 hoaxes belonging to user in page content when there are 11 hoaxes total for two users', async () => {
+    const user = await addUser();
+    await addHoaxes(5, user.id);
+    const user2 = await addUser('user2');
+    await addHoaxes(6, user2.id);
+
+    const response = await getHoaxes(user.id);
+    expect(response.body.content.length).toBe(5);
   });
 });
