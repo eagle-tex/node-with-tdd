@@ -3,8 +3,8 @@ const app = require('../src/app');
 const Hoax = require('../src/hoax/Hoax');
 const User = require('../src/user/User');
 const sequelize = require('../src/config/database');
-// const en = require('../locales/en/translation.json');
-// const fr = require('../locales/fr/translation.json');
+const en = require('../locales/en/translation.json');
+const fr = require('../locales/fr/translation.json');
 
 beforeAll(async () => {
   if (process.env.NODE_ENV === 'test') {
@@ -163,4 +163,21 @@ describe('Listing Hoaxes of a User', () => {
     const response = await getHoaxes(5);
     expect(response.status).toBe(404);
   });
+
+  it.each`
+    language | message
+    ${'en'}  | ${en.user_not_found}
+    ${'fr'}  | ${fr.user_not_found}
+  `(
+    `returns error object with "$message" for unknown user when language is $language`,
+    async ({ language, message }) => {
+      const nowInMillis = Date.now();
+      const response = await getHoaxes(5).set('Accept-Language', language);
+      const error = response.body;
+
+      expect(error.path).toBe('/api/1.0/users/5/hoaxes');
+      expect(error.timestamp).toBeGreaterThan(nowInMillis);
+      expect(error.message).toBe(message);
+    }
+  );
 });
