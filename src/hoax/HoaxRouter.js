@@ -3,6 +3,7 @@ const { check, validationResult } = require('express-validator');
 const router = express.Router();
 const AuthenticationException = require('../auth/AuthenticationException');
 const HoaxService = require('./HoaxService');
+const pagination = require('../middleware/pagination');
 const ValidationException = require('../error/ValidationException');
 
 router.post(
@@ -25,13 +26,11 @@ router.post(
   }
 );
 
-router.get('/api/1.0/hoaxes', (_req, res) => {
-  res.send({
-    content: [],
-    page: 0,
-    size: 10,
-    totalPages: 0
-  });
+router.get('/api/1.0/hoaxes', pagination, async (req, res) => {
+  const { page, size } = req.pagination;
+  const hoaxes = await HoaxService.getHoaxes(page, size);
+
+  res.send(hoaxes);
 });
 
 module.exports = router;
