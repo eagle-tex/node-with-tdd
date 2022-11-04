@@ -33,4 +33,8 @@ router.get('/api/1.0/hoaxes', pagination, async (req, res) => {
   res.send(hoaxes);
 });
 
+router.get('/api/1.0/users/:userId/hoaxes', (_req, res) => {
+  res.send();
+});
+
 module.exports = router;
