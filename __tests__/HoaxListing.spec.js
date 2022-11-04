@@ -175,9 +175,9 @@ describe('Listing Hoaxes of a User', () => {
       const response = await getHoaxes(5).set('Accept-Language', language);
       const error = response.body;
 
+      expect(error.message).toBe(message);
       expect(error.path).toBe('/api/1.0/users/5/hoaxes');
       expect(error.timestamp).toBeGreaterThan(nowInMillis);
-      expect(error.message).toBe(message);
     }
   );
 });
