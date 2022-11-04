@@ -180,4 +180,15 @@ describe('Listing Hoaxes of a User', () => {
       expect(error.timestamp).toBeGreaterThan(nowInMillis);
     }
   );
+
+  it('returns page object as response body', async () => {
+    const user = await addUser();
+    const response = await getHoaxes(user.id);
+    expect(response.body).toEqual({
+      content: [],
+      page: 0,
+      size: 10,
+      totalPages: 0
+    });
+  });
 });
