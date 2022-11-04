@@ -139,3 +139,23 @@ describe('Listing All Hoaxes', () => {
     expect(firstHoax.timestamp).toBeGreaterThan(lastHoax.timestamp);
   });
 });
+
+describe('Listing Hoaxes of a User', () => {
+  const getHoaxes = (id) => {
+    const agent = request(app).get(`/api/1.0/users/:${id}/hoaxes`);
+    return agent;
+  };
+
+  const addUser = async () => {
+    return await User.create({
+      username: 'user1',
+      email: 'user1@mail.com'
+    });
+  };
+
+  it('returns 200 OK when there are no hoaxes in database', async () => {
+    const user = await addUser();
+    const response = await getHoaxes(user.id);
+    expect(response.status).toBe(200);
+  });
+});
