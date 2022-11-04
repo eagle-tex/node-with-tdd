@@ -1,5 +1,4 @@
 const request = require('supertest');
-// const bcrypt = require('bcrypt');
 const app = require('../src/app');
 const Hoax = require('../src/hoax/Hoax');
 const User = require('../src/user/User');
@@ -14,25 +13,12 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  // NOTE: because we included `userId` field as a foreignKey in User-Token
+  // NOTE: because we included `userId` field as a foreignKey in User-Hoax
   // relationship, the `{ truncate: true }` option would not be valid anymore
   // the database will not allow a `{ truncate: true }`.
   // we replace that with a `{ truncate: { cascade: true }}`
   await User.destroy({ truncate: { cascade: true } });
 });
-
-// const auth = async (options = {}) => {
-//   let token; // undefined
-//   const agent = request(app);
-//   if (options.auth) {
-//     const response = await agent.post('/api/1.0/auth').send(options.auth);
-//     token = response.body.token;
-//   }
-
-//   return token;
-// };
-
-// const credentials = { email: 'user1@mail.com', password: 'P4ssword' };
 
 describe('Listing All Hoaxes', () => {
   const getHoaxes = () => {
@@ -101,7 +87,7 @@ describe('Listing All Hoaxes', () => {
     // alternative way of querying 'page 1'
     // const response = await request(app).get('/api/1.0/users?page=1');
 
-    expect(response.body.content[0].content).toBe('hoax content 11');
+    expect(response.body.content[0].content).toBe('hoax content 1');
     expect(response.body.page).toBe(1);
   });
 
@@ -142,5 +128,14 @@ describe('Listing All Hoaxes', () => {
 
     expect(response.body.size).toBe(10);
     expect(response.body.page).toBe(0);
+  });
+
+  it('returns hoaxes ordered from new to old', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes();
+    const firstHoax = response.body.content[0];
+    const lastHoax = response.body.content[9];
+
+    expect(firstHoax.timestamp).toBeGreaterThan(lastHoax.timestamp);
   });
 });
