@@ -26,7 +26,12 @@ router.post(
 );
 
 router.get('/api/1.0/hoaxes', (_req, res) => {
-  res.send();
+  res.send({
+    content: [],
+    page: 0,
+    size: 10,
+    totalPages: 0
+  });
 });
 
 module.exports = router;
