@@ -1,8 +1,11 @@
 const request = require('supertest');
+// const bcrypt = require('bcrypt');
 const app = require('../src/app');
 const Hoax = require('../src/hoax/Hoax');
 const User = require('../src/user/User');
 const sequelize = require('../src/config/database');
+// const en = require('../locales/en/translation.json');
+// const fr = require('../locales/fr/translation.json');
 
 beforeAll(async () => {
   if (process.env.NODE_ENV === 'test') {
@@ -18,10 +21,22 @@ beforeEach(async () => {
   await User.destroy({ truncate: { cascade: true } });
 });
 
+// const auth = async (options = {}) => {
+//   let token; // undefined
+//   const agent = request(app);
+//   if (options.auth) {
+//     const response = await agent.post('/api/1.0/auth').send(options.auth);
+//     token = response.body.token;
+//   }
+
+//   return token;
+// };
+
+// const credentials = { email: 'user1@mail.com', password: 'P4ssword' };
+
 describe('Listing All Hoaxes', () => {
   const getHoaxes = () => {
     const agent = request(app).get('/api/1.0/hoaxes');
-
     return agent;
   };
 
@@ -71,5 +86,61 @@ describe('Listing All Hoaxes', () => {
 
     expect(hoaxKeys).toEqual(['id', 'content', 'timestamp', 'user']);
     expect(userKeys).toEqual(['id', 'username', 'email', 'image']);
+  });
+
+  it('returns 2 as totalPages when there are 11 hoaxes', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes();
+
+    expect(response.body.totalPages).toBe(2);
+  });
+
+  it('returns second page hoaxes and page indicator when page is set as 1 in request parameter', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes().query({ page: 1 });
+    // alternative way of querying 'page 1'
+    // const response = await request(app).get('/api/1.0/users?page=1');
+
+    expect(response.body.content[0].content).toBe('hoax content 11');
+    expect(response.body.page).toBe(1);
+  });
+
+  it('returns first page hoaxes when page is below 0 in request parameter', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes().query({ page: -5 });
+
+    expect(response.body.page).toBe(0);
+  });
+
+  it('returns 5 hoaxes and corresponding size indicator when size is set to 5 in request parameter', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes().query({ size: 5 });
+
+    expect(response.body.content.length).toBe(5);
+    expect(response.body.size).toBe(5);
+  });
+
+  it('returns 10 hoaxes and corresponding size indicator when size is set as 1000', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes().query({ size: 1000 });
+
+    expect(response.body.content.length).toBe(10);
+    expect(response.body.size).toBe(10);
+  });
+
+  it('returns 10 hoaxes and corresponding size indicator when size is set as 0', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes().query({ size: 0 });
+
+    expect(response.body.content.length).toBe(10);
+    expect(response.body.size).toBe(10);
+  });
+
+  it('returns page as 0 and size as 10 when non numeric query params provided for both', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes().query({ size: 'size', page: 'page' });
+
+    expect(response.body.size).toBe(10);
+    expect(response.body.page).toBe(0);
   });
 });
