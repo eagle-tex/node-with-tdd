@@ -61,4 +61,15 @@ describe('Listing All Hoaxes', () => {
 
     expect(response.body.content.length).toBe(10);
   });
+
+  it('returns only id, content, timestamp and user object having id, username, email and image in content array for each hoax', async () => {
+    await addHoaxes(11);
+    const response = await getHoaxes();
+    const hoax = response.body.content[0];
+    const hoaxKeys = Object.keys(hoax);
+    const userKeys = Object.keys(hoax.user);
+
+    expect(hoaxKeys).toEqual(['id', 'content', 'timestamp', 'user']);
+    expect(userKeys).toEqual(['id', 'username', 'email', 'image']);
+  });
 });
