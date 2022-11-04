@@ -38,6 +38,13 @@ const getHoaxesOfUser = async (userId) => {
   if (!user) {
     throw new NotFoundException('user_not_found');
   }
+
+  return {
+    content: [],
+    page: 0,
+    size: 10,
+    totalPages: 0
+  };
 };
 
 module.exports = { save, getHoaxes, getHoaxesOfUser };
