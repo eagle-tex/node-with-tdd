@@ -153,6 +153,16 @@ describe('Listing Hoaxes of a User', () => {
     });
   };
 
+  const addHoaxes = async (count, userId) => {
+    for (let i = 0; i < count; i++) {
+      await Hoax.create({
+        content: `hoax content ${i + 1}`,
+        timestamp: Date.now(),
+        userId: userId
+      });
+    }
+  };
+
   it('returns 200 OK when there are no hoaxes in database', async () => {
     const user = await addUser();
     const response = await getHoaxes(user.id);
@@ -190,5 +200,13 @@ describe('Listing Hoaxes of a User', () => {
       size: 10,
       totalPages: 0
     });
+  });
+
+  it('returns 10 hoaxes in page content when there all 11 hoaxes in database', async () => {
+    const user = await addUser();
+    await addHoaxes(11, user.id);
+    const response = await getHoaxes(user.id);
+
+    expect(response.body.content.length).toBe(10);
   });
 });
