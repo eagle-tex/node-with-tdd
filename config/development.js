@@ -11,8 +11,8 @@ module.exports = {
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-      user: 'gracie.jerde@ethereal.email',
-      pass: 'ZxbyhhzSXVcmJ5Kvx6'
+      user: 'lee.miller26@ethereal.email',
+      pass: 'qKaHUKyD2g2AffJbh9'
     }
   },
   uploadDir: 'uploads-dev',
