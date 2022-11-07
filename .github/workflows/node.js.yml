@@ -36,6 +36,7 @@ jobs:
           key: ${{secrets.GOOGLE_CLOUD_VM_SSH}}
           host: ${{secrets.GOOGLE_CLOUD_VM_IP}}
           username: ${{secrets.GOOGLE_CLOUD_VM_USERNAME}}
+          passphrase: ${{secrets.GOOGLE_CLOUD_VM_PASSPHRASE}}
           script: |
             pm2 delete all
             cd /var/app/node-with-tdd
