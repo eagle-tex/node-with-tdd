@@ -104,4 +104,16 @@ describe('Upload File for Hoax', () => {
       expect(fs.existsSync(filePath)).toBe(true);
     }
   );
+
+  it('returns 400 Bad Request when uploaded file size is bigger than 5MB', async () => {
+    const fiveMB = 5 * 1024 * 1024;
+    // create a file named 'random-file' that is over 5MB (5MB + 1Bite)
+    const filePath = path.join('.', '__tests__', 'resources', 'random-file');
+    fs.writeFileSync(filePath, 'a'.repeat(fiveMB) + 'a');
+    const response = await uploadFile('random-file');
+
+    expect(response.status).toBe(400);
+    // delete file after this test
+    fs.unlinkSync(filePath);
+  });
 });
