@@ -62,11 +62,16 @@ const saveAttachment = async (file) => {
     path.join(attachmentFolder, filename),
     file.buffer
   );
-  await FileAttachment.create({
+
+  const savedAttachment = await FileAttachment.create({
     filename,
     uploadDate: new Date(),
     fileType: fileType
   });
+
+  return {
+    id: savedAttachment.id
+  };
 };
 
 module.exports = {
