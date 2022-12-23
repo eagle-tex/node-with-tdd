@@ -13,5 +13,6 @@ module.exports = {
     tls: { rejectUnauthorized: false }
   },
   uploadDir: 'uploads-test',
-  profileDir: 'profile'
+  profileDir: 'profile',
+  attachmentDir: 'attachment'
 };
