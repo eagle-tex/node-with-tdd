@@ -54,4 +54,12 @@ describe('Upload File for Hoax', () => {
 
     expect(fs.existsSync(filePath)).toBe(true);
   });
+
+  fit('saves fileType in attachment object in database', async () => {
+    await uploadFile();
+    const attachments = await FileAttachment.findAll();
+    const attachment = attachments[0];
+
+    expect(attachment.fileType).toBe('image/png');
+  });
 });
