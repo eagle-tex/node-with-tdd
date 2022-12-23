@@ -50,6 +50,11 @@ const isSupportedFileType = async (buffer) => {
 };
 
 const saveAttachment = async (file) => {
+  const type = await FileType.fromBuffer(file.buffer);
+  console.table({
+    typeFromMulter: file.mimetype,
+    typeFromFileTypeLibrary: type
+  });
   const filename = randomString(32);
   await fs.promises.writeFile(
     path.join(attachmentFolder, filename),
@@ -57,7 +62,8 @@ const saveAttachment = async (file) => {
   );
   await FileAttachment.create({
     filename,
-    uploadDate: new Date()
+    uploadDate: new Date(),
+    fileType: type.mime
   });
 };
 
