@@ -18,10 +18,10 @@ beforeEach(async () => {
   return await FileAttachment.destroy({ truncate: true });
 });
 
-const uploadFile = () => {
+const uploadFile = (file = 'test-png.png') => {
   return request(app)
     .post('/api/1.0/hoaxes/attachments')
-    .attach('file', path.join('.', '__tests__', 'resources', 'test-png.png'));
+    .attach('file', path.join('.', '__tests__', 'resources', file));
 };
 
 describe('Upload File for Hoax', () => {
@@ -55,11 +55,22 @@ describe('Upload File for Hoax', () => {
     expect(fs.existsSync(filePath)).toBe(true);
   });
 
-  fit('saves fileType in attachment object in database', async () => {
-    await uploadFile();
-    const attachments = await FileAttachment.findAll();
-    const attachment = attachments[0];
+  it.each`
+    file              | fileType
+    ${'test-png.png'} | ${'image/png'}
+    ${'test-png'}     | ${'image/png'}
+    ${'test-gif.gif'} | ${'image/gif'}
+    ${'test-jpg.jpg'} | ${'image/jpeg'}
+    ${'test-pdf.pdf'} | ${'application/pdf'}
+    ${'test-txt.txt'} | ${null}
+  `(
+    `saves fileType as $fileType in attachment object when $file is uploaded`,
+    async ({ fileType, file }) => {
+      await uploadFile(file);
+      const attachments = await FileAttachment.findAll();
+      const attachment = attachments[0];
 
-    expect(attachment.fileType).toBe('image/png');
-  });
+      expect(attachment.fileType).toBe(fileType);
+    }
+  );
 });
