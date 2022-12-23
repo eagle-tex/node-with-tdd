@@ -116,4 +116,16 @@ describe('Upload File for Hoax', () => {
     // delete file after this test
     fs.unlinkSync(filePath);
   });
+
+  it('returns 200 OK when uploaded file size is under 5MB', async () => {
+    const almostFiveMB = 5 * 1024 * 1024 - 1;
+    // create a file named 'random-file' that is exactly 5MB
+    const filePath = path.join('.', '__tests__', 'resources', 'random-file');
+    fs.writeFileSync(filePath, 'a'.repeat(almostFiveMB));
+    const response = await uploadFile('random-file');
+
+    expect(response.status).toBe(200);
+    // delete file after this test
+    fs.unlinkSync(filePath);
+  });
 });
