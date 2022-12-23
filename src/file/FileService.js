@@ -4,6 +4,7 @@ const config = require('config');
 const FileType = require('file-type');
 
 const { randomString } = require('../shared/generator');
+const FileAttachment = require('./FileAttachment');
 
 const { uploadDir, profileDir, attachmentDir } = config;
 const profileFolder = path.join('.', uploadDir, profileDir);
@@ -48,10 +49,18 @@ const isSupportedFileType = async (buffer) => {
     : type.mime === 'image/png' || type.mime === 'image/jpeg';
 };
 
+const saveAttachment = async () => {
+  await FileAttachment.create({
+    filename: randomString(32),
+    uploadDate: new Date()
+  });
+};
+
 module.exports = {
   createFolders,
   saveProfileImage,
   deleteProfileImage,
   isLessThan2MB,
-  isSupportedFileType
+  isSupportedFileType,
+  saveAttachment
 };
