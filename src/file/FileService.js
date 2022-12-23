@@ -51,12 +51,13 @@ const isSupportedFileType = async (buffer) => {
 
 const saveAttachment = async (file) => {
   const type = await FileType.fromBuffer(file.buffer);
+  let filename = randomString(32);
   let fileType; // undefined
   if (type) {
     fileType = type.mime;
+    filename += `.${type.ext}`;
   }
 
-  const filename = randomString(32);
   await fs.promises.writeFile(
     path.join(attachmentFolder, filename),
     file.buffer
