@@ -13,8 +13,9 @@ const path = require('path');
 const HoaxRouter = require('./hoax/HoaxRouter');
 const FileRouter = require('./file/FileRouter');
 
-const { uploadDir, profileDir } = config;
+const { uploadDir, profileDir, attachmentDir } = config;
 const profileFolder = path.join('.', uploadDir, profileDir);
+const attachmentFolder = path.join('.', uploadDir, attachmentDir);
 
 const ONE_YEAR_IN_MILLIS = 365 * 24 * 60 * 60 * 1000;
 
@@ -45,6 +46,11 @@ app.use(express.json({ limit: '3mb' }));
 app.use(
   '/images',
   express.static(profileFolder, { maxAge: ONE_YEAR_IN_MILLIS })
+);
+
+app.use(
+  '/attachments',
+  express.static(attachmentFolder, { maxAge: ONE_YEAR_IN_MILLIS })
 );
 
 app.use(tokenAuthentication);
