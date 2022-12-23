@@ -74,11 +74,20 @@ const saveAttachment = async (file) => {
   };
 };
 
+const associateFileToHoax = async (attachmentId, hoaxId) => {
+  const attachment = await FileAttachment.findOne({
+    where: { id: attachmentId }
+  });
+  attachment.hoaxId = hoaxId;
+  await attachment.save();
+};
+
 module.exports = {
   createFolders,
   saveProfileImage,
   deleteProfileImage,
   isLessThan2MB,
   isSupportedFileType,
-  saveAttachment
+  saveAttachment,
+  associateFileToHoax
 };
