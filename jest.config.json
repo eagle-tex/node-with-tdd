@@ -5,5 +5,6 @@
   ],
   // "verbose": true
   "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/config/"],
-  "testSequencer": "<rootDir>/test-sequencer.js"
+  "testSequencer": "<rootDir>/test-sequencer.js",
+  "setupFilesAfterEnv": ["<rootDir>/test-setup.js"]
 }
