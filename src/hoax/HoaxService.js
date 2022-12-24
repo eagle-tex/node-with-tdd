@@ -50,8 +50,17 @@ const getHoaxes = async (page, size, userId) => {
     offset: page * size
   });
 
+  const newContent = [];
+  for (let hoaxSequelize of hoaxesWithCount.rows) {
+    const hoaxAsJSON = hoaxSequelize.get({ plain: true });
+    if (hoaxAsJSON.fileAttachment === null) {
+      delete hoaxAsJSON.fileAttachment;
+    }
+    newContent.push(hoaxAsJSON);
+  }
+
   return {
-    content: hoaxesWithCount.rows,
+    content: newContent,
     page,
     size,
     totalPages: Math.ceil(hoaxesWithCount.count / size)
