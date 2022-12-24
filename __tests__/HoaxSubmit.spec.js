@@ -242,4 +242,26 @@ describe('Post Hoax', () => {
 
     expect(response.status).toBe(200);
   });
+
+  it('keeps the old associated hoax when new hoax submitted with old attachment id', async () => {
+    const uploadResponse = await uploadFile();
+    const uploadedFileId = uploadResponse.body.id;
+    await addUser();
+    await postHoax(
+      { content: 'Hoax content', fileAttachment: uploadedFileId },
+      { auth: credentials }
+    );
+    const attachment = await FileAttachment.findOne({
+      where: { id: uploadedFileId }
+    });
+    await postHoax(
+      { content: 'Another hoax content', fileAttachment: uploadedFileId },
+      { auth: credentials }
+    );
+    const attachmentAfterSecondPost = await FileAttachment.findOne({
+      where: { id: uploadedFileId }
+    });
+
+    expect(attachment.hoaxId).toBe(attachmentAfterSecondPost.hoaxId);
+  });
 });
