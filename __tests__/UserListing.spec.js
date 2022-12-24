@@ -2,15 +2,8 @@ const request = require('supertest');
 const bcrypt = require('bcrypt');
 const app = require('../src/app');
 const User = require('../src/user/User');
-const sequelize = require('../src/config/database');
 const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
-
-beforeAll(async () => {
-  if (process.env.NODE_ENV === 'test') {
-    await sequelize.sync();
-  }
-});
 
 beforeEach(async () => {
   // NOTE: because we included `userId` field as a foreignKey in User-Token

@@ -1,7 +1,6 @@
 const request = require('supertest');
 const app = require('../src/app');
 const User = require('../src/user/User');
-const sequelize = require('../src/config/database');
 const SMTPServer = require('smtp-server').SMTPServer;
 const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
@@ -33,9 +32,6 @@ beforeAll(async () => {
 
   server.listen(config.mail.port, 'localhost'); // await ?
 
-  if (process.env.NODE_ENV === 'test') {
-    await sequelize.sync();
-  }
   // to make all tests use the same timeout,
   // we set the timeout to 20 seconds at the end of beforeAll
   jest.setTimeout(20000);
