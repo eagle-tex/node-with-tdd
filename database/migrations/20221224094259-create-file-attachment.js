@@ -24,8 +24,7 @@ module.exports = {
         references: {
           model: 'hoaxes',
           key: 'id'
-        },
-        onDelete: 'cascade'
+        }
       }
     });
   },
