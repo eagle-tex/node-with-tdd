@@ -18,8 +18,8 @@ beforeEach(async () => {
   // relationship, the `{ truncate: true }` option would not be valid anymore
   // the database will not allow a `{ truncate: true }`.
   // we replace that with a `{ truncate: { cascade: true }}`
-  await User.destroy({ truncate: { cascade: true } });
   await FileAttachment.destroy({ truncate: true });
+  await User.destroy({ truncate: { cascade: true } });
 });
 
 const addFileAttachment = async (hoaxId) => {
