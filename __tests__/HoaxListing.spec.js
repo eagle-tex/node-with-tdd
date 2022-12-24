@@ -22,15 +22,15 @@ beforeEach(async () => {
   await FileAttachment.destroy({ truncate: true });
 });
 
-describe('Listing All Hoaxes', () => {
-  const addFileAttachment = async (hoaxId) => {
-    await FileAttachment.create({
-      filename: `test-file-for-hoax-${hoaxId}`,
-      fileType: 'image/png',
-      hoaxId
-    });
-  };
+const addFileAttachment = async (hoaxId) => {
+  await FileAttachment.create({
+    filename: `test-file-for-hoax-${hoaxId}`,
+    fileType: 'image/png',
+    hoaxId
+  });
+};
 
+describe('Listing All Hoaxes', () => {
   const getHoaxes = () => {
     const agent = request(app).get('/api/1.0/hoaxes');
     return agent;
@@ -80,7 +80,6 @@ describe('Listing All Hoaxes', () => {
   it('returns only id, content, timestamp and user object having id, username, email and image in content array for each hoax', async () => {
     await addHoaxes(11);
     const response = await getHoaxes();
-    console.log(response.body);
     const hoax = response.body.content[0];
     const hoaxKeys = Object.keys(hoax);
     const userKeys = Object.keys(hoax.user);
@@ -186,13 +185,17 @@ describe('Listing Hoaxes of a User', () => {
   };
 
   const addHoaxes = async (count, userId) => {
+    const hoaxIds = [];
     for (let i = 0; i < count; i++) {
-      await Hoax.create({
+      const hoax = await Hoax.create({
         content: `hoax content ${i + 1}`,
         timestamp: Date.now(),
         userId: userId
       });
+      hoaxIds.push(hoax.id);
     }
+
+    return hoaxIds;
   };
 
   it('returns 200 OK when there are no hoaxes in database', async () => {
@@ -262,6 +265,26 @@ describe('Listing Hoaxes of a User', () => {
 
     expect(hoaxKeys).toEqual(['id', 'content', 'timestamp', 'user']);
     expect(userKeys).toEqual(['id', 'username', 'email', 'image']);
+  });
+
+  it('returns fileAttachment having filename, filetype if hoax has any', async () => {
+    const user = await addUser();
+    const hoaxIds = await addHoaxes(1, user.id);
+    await addFileAttachment(hoaxIds[0]);
+    const response = await getHoaxes(user.id);
+    const hoax = response.body.content[0];
+    const hoaxKeys = Object.keys(hoax);
+
+    expect(hoaxKeys).toEqual([
+      'id',
+      'content',
+      'timestamp',
+      'user',
+      'fileAttachment'
+    ]);
+
+    const fileAttachmentKeys = Object.keys(hoax.fileAttachment);
+    expect(fileAttachmentKeys).toEqual(['filename', 'fileType']);
   });
 
   it('returns 2 as totalPages when there are 11 hoaxes', async () => {
