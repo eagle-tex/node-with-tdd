@@ -82,6 +82,10 @@ const associateFileToHoax = async (attachmentId, hoaxId) => {
     return;
   }
 
+  if (attachment.hoaxId) {
+    return;
+  }
+
   attachment.hoaxId = hoaxId;
   await attachment.save();
 };
