@@ -78,6 +78,10 @@ const associateFileToHoax = async (attachmentId, hoaxId) => {
   const attachment = await FileAttachment.findOne({
     where: { id: attachmentId }
   });
+  if (!attachment) {
+    return;
+  }
+
   attachment.hoaxId = hoaxId;
   await attachment.save();
 };
