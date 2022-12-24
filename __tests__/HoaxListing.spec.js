@@ -80,6 +80,7 @@ describe('Listing All Hoaxes', () => {
   it('returns only id, content, timestamp and user object having id, username, email and image in content array for each hoax', async () => {
     await addHoaxes(11);
     const response = await getHoaxes();
+    console.log(response.body);
     const hoax = response.body.content[0];
     const hoaxKeys = Object.keys(hoax);
     const userKeys = Object.keys(hoax.user);
@@ -88,7 +89,7 @@ describe('Listing All Hoaxes', () => {
     expect(userKeys).toEqual(['id', 'username', 'email', 'image']);
   });
 
-  fit('returns fileAttachment having filename, filetype if hoax has any', async () => {
+  it('returns fileAttachment having filename, filetype if hoax has any', async () => {
     const hoaxIds = await addHoaxes(1);
     await addFileAttachment(hoaxIds[0]);
     const response = await getHoaxes();
