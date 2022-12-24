@@ -232,4 +232,14 @@ describe('Post Hoax', () => {
 
     expect(attachmentInDB.hoaxId).toBe(hoax.id);
   });
+
+  it('returns 200 OK even if the attachment does not exist', async () => {
+    await addUser();
+    const response = await postHoax(
+      { content: 'Hoax content', fileAttachment: 1000 },
+      { auth: credentials }
+    );
+
+    expect(response.status).toBe(200);
+  });
 });
