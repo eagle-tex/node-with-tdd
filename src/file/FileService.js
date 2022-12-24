@@ -92,23 +92,26 @@ const associateFileToHoax = async (attachmentId, hoaxId) => {
 };
 
 const removeUnusedAttachments = async () => {
-  const oneDayOld = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const attachments = await FileAttachment.findAll({
-    where: {
-      uploadDate: {
-        [Sequelize.Op.lt]: oneDayOld
-      },
-      hoaxId: {
-        [Sequelize.Op.is]: null
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+  setInterval(async () => {
+    const oneDayOld = new Date(Date.now() - ONE_DAY);
+    const attachments = await FileAttachment.findAll({
+      where: {
+        uploadDate: {
+          [Sequelize.Op.lt]: oneDayOld
+        },
+        hoaxId: {
+          [Sequelize.Op.is]: null
+        }
       }
-    }
-  });
+    });
 
-  for (let attachment of attachments) {
-    const { filename } = attachment.get({ plain: true });
-    await fs.promises.unlink(path.join(attachmentFolder, filename));
-    await attachment.destroy();
-  }
+    for (let attachment of attachments) {
+      const { filename } = attachment.get({ plain: true });
+      await fs.promises.unlink(path.join(attachmentFolder, filename));
+      await attachment.destroy();
+    }
+  }, ONE_DAY);
 };
 
 module.exports = {
