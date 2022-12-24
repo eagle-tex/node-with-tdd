@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const app = require('../src/app');
 const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
+const FileAttachment = require('../src/file/FileAttachment');
 const User = require('../src/user/User');
 const Token = require('../src/auth/Token');
 const sequelize = require('../src/config/database');
@@ -39,6 +40,13 @@ beforeAll(async () => {
   if (process.env.NODE_ENV === 'test') {
     await sequelize.sync();
   }
+
+  // NOTE: drop the fileAttachments table before running this test suite
+  // we do this only ONCE because the current suite does not depend on
+  // the fileAttachments table, therefore we need to drop the table
+  // from the database state received from the previous test suite `HoaxSubmit`
+  await FileAttachment.destroy({ truncate: true });
+
   // to make all tests use the same timeout,
   // we set the timeout to 20 seconds at the end of beforeAll
   jest.setTimeout(20000);
