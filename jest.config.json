@@ -4,5 +4,6 @@
     "jest-watch-typeahead/testname"
   ],
   // "verbose": true
-  "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/config/"]
+  "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/config/"],
+  "testSequencer": "<rootDir>/test-sequencer.js"
 }
