@@ -2,6 +2,7 @@ const Hoax = require('./Hoax');
 const User = require('../user/User');
 const NotFoundException = require('../error/NotFoundException');
 const FileService = require('../file/FileService');
+const FileAttachment = require('../file/FileAttachment');
 
 const save = async (body, user) => {
   const hoax = {
@@ -31,12 +32,19 @@ const getHoaxes = async (page, size, userId) => {
 
   const hoaxesWithCount = await Hoax.findAndCountAll({
     attributes: ['id', 'content', 'timestamp'],
-    include: {
-      model: User,
-      as: 'user',
-      attributes: ['id', 'username', 'email', 'image'],
-      where: where
-    },
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'username', 'email', 'image'],
+        where: where
+      },
+      {
+        model: FileAttachment,
+        as: 'fileAttachment',
+        attributes: ['filename', 'fileType']
+      }
+    ],
     order: [['id', 'DESC']],
     limit: size,
     offset: page * size
