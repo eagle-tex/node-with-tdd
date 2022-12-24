@@ -78,7 +78,7 @@ const uploadFile = (file = 'test-png.png', options = {}) => {
   return agent.attach('file', path.join('.', '__tests__', 'resources', file));
 };
 
-describe('Post Hoax', () => {
+describe.skip('Post Hoax', () => {
   it('returns 401 when hoax post request has no authentication', async () => {
     const response = await postHoax();
     expect(response.status).toBe(401);
