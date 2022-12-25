@@ -1,6 +1,6 @@
 const FileService = require('../src/file/FileService');
 const FileAttachment = require('../src/file/FileAttachment');
-const Hoax = require('../src/hoax/Hoax');
+// const Hoax = require('../src/hoax/Hoax');
 const fs = require('fs');
 const path = require('path');
 const config = require('config');
@@ -31,7 +31,6 @@ describe('createFolders', () => {
 
 describe('Scheduled Unused File Cleanup', () => {
   const filename = 'test-file-' + Date.now();
-  // console.log({ now: Date.now() });
   const testFile = path.join('.', '__tests__', 'resources', 'test-png.png');
   const targetPath = path.join(attachmentFolder, filename);
 
@@ -40,29 +39,12 @@ describe('Scheduled Unused File Cleanup', () => {
     if (fs.existsSync(targetPath)) {
       fs.unlinkSync(targetPath);
     }
-    // console.log({
-    //   where: '+++++ BEFORE_EACH +++++',
-    //   BEFORE_EACH_testFileExists: fs.existsSync(testFile),
-    //   BEFORE_EACH_targetPathExists: fs.existsSync(targetPath)
-    // });
   });
 
   it('removes the 24 hours old file with attachment entry if not used in a hoax', async () => {
     jest.useFakeTimers();
     fs.copyFileSync(testFile, targetPath);
-    // console.log({
-    //   where: '----- JUST AFTER FAKE TIMERS -----',
-    //   testFileExists: fs.existsSync(testFile),
-    //   targetPathExists: fs.existsSync(targetPath)
-    // });
-
-    // const uploadDate = new Date(Date.now() - (24 * 60 * 60 * 1000 + 1 * 1000));
-    const uploadDate = new Date(Date.now() - 5 * 1000);
-    console.log({
-      where: '----- UPLOAD DATE - 5 SECONDS -----',
-      uploadDateAsDate: uploadDate,
-      nowAsDate: new Date(Date.now())
-    });
+    const uploadDate = new Date(Date.now() - 5 * 1000); // 5 seconds before now
 
     const attachment = await FileAttachment.create({
       filename: filename,
@@ -70,25 +52,9 @@ describe('Scheduled Unused File Cleanup', () => {
     });
     await FileService.removeUnusedAttachments();
 
-    const attachmentInDB = await FileAttachment.findOne();
-    console.log({
-      where: '----- BEFORE ADVANCE TIMERS -----',
-      attachmentsInDB: attachmentInDB.get({ plain: true })
-    });
-
-    jest.advanceTimersByTime(24 * 60 * 60 * 1000 + 0 * 5 * 1000);
-    console.log({
-      where: '----- AFTER ADVANCE TIMERS -----',
-      uploadDateAsDate: uploadDate,
-      nowAsDate: new Date(Date.now())
-    });
-
-    jest.useRealTimers();
-    console.log({
-      where: '----- WITH REAL TIMERS -----',
-      uploadDateAsDate: uploadDate,
-      nowAsDate: new Date(Date.now())
-    });
+    // fakely advance by 24h to trigger the execution of removeUnusedAttachments
+    jest.advanceTimersByTime(24 * 60 * 60 * 1000); // advance by 24h
+    jest.useRealTimers(); // come back to real time (now)
 
     await new Promise((resolve) => setTimeout(() => resolve(), 1000));
     const attachmentAfterRemove = await FileAttachment.findOne({
@@ -102,56 +68,47 @@ describe('Scheduled Unused File Cleanup', () => {
   it('keeps the files younger than 24 hours and their database entry even if not associated with a hoax', async () => {
     jest.useFakeTimers();
     fs.copyFileSync(testFile, targetPath);
-    console.log({
-      where: '----- JUST AFTER FAKE TIMERS -----',
-      testFileExists: fs.existsSync(testFile),
-      targetPathExists: fs.existsSync(targetPath)
-    });
-
-    // const uploadDate = new Date(Date.now() - 23 * 60 * 60 * 1000);
-    const uploadDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
-    console.log({
-      where: '----- UPLOAD DATE + 1 HOUR -----',
-      uploadDateAsDate: uploadDate,
-      nowAsDate: new Date(Date.now())
-    });
-
+    const uploadDate = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1h after now
     const attachment = await FileAttachment.create({
       filename: filename,
       uploadDate: uploadDate
     });
     await FileService.removeUnusedAttachments();
 
-    const attachmentInDB = await FileAttachment.findOne();
-    console.log({
-      where: '----- BEFORE ADVANCE TIMERS -----',
-      attachmentsInDB: attachmentInDB.get({ plain: true })
-    });
-
+    // fakely advance by 24h to trigger the execution of removeUnusedAttachments
     jest.advanceTimersByTime(24 * 60 * 60 * 1000 + 5 * 1000);
-    console.log({
-      where: '----- AFTER ADVANCE TIMERS -----',
-      uploadDateAsDate: uploadDate,
-      nowAsDate: new Date(Date.now())
-    });
+    jest.useRealTimers(); // come back to real time (now)
 
-    jest.useRealTimers();
-    console.log({
-      where: '----- WITH REAL TIMERS -----',
-      uploadDateAsDate: uploadDate,
-      nowAsDate: new Date(Date.now())
-    });
-
+    // NOTE: I don't think if the following line is necessary in this test
+    // await new Promise((resolve) => setTimeout(() => resolve(), 1000));
     const attachmentAfterRemove = await FileAttachment.findOne({
       where: { id: attachment.id }
     });
-    console.log({
-      attachmentAfterRemove: attachmentAfterRemove.get({ plain: true })
-    });
 
-    await new Promise((resolve) => setTimeout(() => resolve(), 1000));
-    // expect.assertions(2);
     expect(attachmentAfterRemove).not.toBeNull();
     expect(fs.existsSync(targetPath)).toBe(true);
   });
+
+  // fit('keeps the files younger than 24 hours and their database entry even if not associated with a hoax', async () => {
+  //   jest.useFakeTimers();
+  //   fs.copyFileSync(testFile, targetPath);
+  //   const uploadDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
+  //   const attachment = await FileAttachment.create({
+  //     filename: filename,
+  //     uploadDate: uploadDate
+  //   });
+  //   await FileService.removeUnusedAttachments();
+
+  //   jest.advanceTimersByTime(24 * 60 * 60 * 1000 + 5 * 1000);
+
+  //   jest.useRealTimers();
+
+  //   const attachmentAfterRemove = await FileAttachment.findOne({
+  //     where: { id: attachment.id }
+  //   });
+
+  //   await new Promise((resolve) => setTimeout(() => resolve(), 1000));
+  //   expect(attachmentAfterRemove).not.toBeNull();
+  //   expect(fs.existsSync(targetPath)).toBe(true);
+  // });
 });
