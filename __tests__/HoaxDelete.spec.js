@@ -6,18 +6,23 @@ const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
 const Hoax = require('../src/hoax/Hoax');
 const FileAttachment = require('../src/file/FileAttachment');
+const fs = require('fs');
+const path = require('path');
+const config = require('config');
+
+const { uploadDir, attachmentDir } = config;
+const attachmentFolder = path.join('.', uploadDir, attachmentDir);
+
+const filename = `test-file-hoax-delete-${Date.now()}`;
+const targetPath = path.join(attachmentFolder, filename);
+const testFilePath = path.join('.', '__tests__', 'resources', 'test-png.png');
 
 beforeEach(async () => {
-  // NOTE: because of the `onDelete: 'cascade'` added in the r/ship between
-  //   Hoax and FileAttachment, it is not necessary to clear the fileAttachments
-  //   table before clearing the users table
-  // await FileAttachment.destroy({ truncate: true }); // DELETE this line
-
-  // NOTE: because we included `userId` field as a foreignKey in User-Token
-  //   relationship, the `{ truncate: true }` option would not be valid anymore
-  //   the database will not allow a `{ truncate: true }`.
-  //   we replace that with a `{ truncate: { cascade: true }}`
   await User.destroy({ truncate: { cascade: true } });
+
+  if (fs.existsSync(targetPath)) {
+    fs.unlinkSync(targetPath);
+  }
 });
 
 const activeUser = {
@@ -45,10 +50,11 @@ const addHoax = async (userId) => {
 };
 
 const addFileAttachment = async (hoaxId) => {
+  fs.copyFileSync(testFilePath, targetPath);
   return await FileAttachment.create({
-    filename: 'random-file',
+    filename: filename,
     uploadDate: new Date(),
-    hoaxId
+    hoaxId: hoaxId
   });
 };
 
@@ -156,5 +162,16 @@ describe('Delete Hoax', () => {
     });
 
     expect(attachmentInDB).toBeNull();
+  });
+
+  it('removes the file from storage when user deletes their hoax', async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    await addFileAttachment(hoax.id);
+    const token = await auth({ auth: credentials });
+
+    await deleteHoax(hoax.id, { token });
+
+    expect(fs.existsSync(targetPath)).toBe(false);
   });
 });
