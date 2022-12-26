@@ -61,4 +61,10 @@ describe('Delete Hoax', () => {
 
     expect(response.status).toBe(403);
   });
+
+  it('returns 403 when token is invalid', async () => {
+    const response = await deleteHoax(5, { token: 'abcde' });
+
+    expect(response.status).toBe(403);
+  });
 });
