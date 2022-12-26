@@ -105,12 +105,6 @@ const removeUnusedAttachments = async () => {
         }
       }
     });
-    console.log({
-      where: '***** removeUnusedAttachments *****',
-      oneDayOld,
-      nowAsDate: new Date(Date.now()),
-      numAttachments: attachments.length
-    });
 
     for (let attachment of attachments) {
       const { filename } = attachment.get({ plain: true });
