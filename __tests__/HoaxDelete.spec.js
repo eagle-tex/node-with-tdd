@@ -5,8 +5,11 @@ const bcrypt = require('bcrypt');
 const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
 const Hoax = require('../src/hoax/Hoax');
+const FileAttachment = require('../src/file/FileAttachment');
 
 beforeEach(async () => {
+  // NOTE: clear fileAttachments table before the users table
+  await FileAttachment.destroy({ truncate: true });
   // NOTE: because we included `userId` field as a foreignKey in User-Token
   // relationship, the `{ truncate: true }` option would not be valid anymore
   // the database will not allow a `{ truncate: true }`.
@@ -35,6 +38,14 @@ const addHoax = async (userId) => {
     content: `Hoax for user ${userId}`,
     timestamp: Date.now(),
     userId
+  });
+};
+
+const addFileAttachment = async (hoaxId) => {
+  return await FileAttachment.create({
+    filename: 'random-file',
+    uploadDate: new Date(),
+    hoaxId
   });
 };
 
@@ -128,5 +139,19 @@ describe('Delete Hoax', () => {
     const hoaxInDB = await Hoax.findOne({ where: { id: hoax.id } });
 
     expect(hoaxInDB).toBeNull();
+  });
+
+  it('removes the fileAttachment from database when user deletes their hoax', async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    const attachment = await addFileAttachment(hoax.id);
+    const token = await auth({ auth: credentials });
+
+    await deleteHoax(hoax.id, { token });
+    const attachmentInDB = await FileAttachment.findOne({
+      where: { id: attachment.id }
+    });
+
+    expect(attachmentInDB).toBeNull();
   });
 });
