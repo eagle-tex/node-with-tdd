@@ -108,7 +108,9 @@ const updateUser = async (id, updatedBody) => {
 };
 
 const deleteUser = async (id) => {
-  await User.destroy({ where: { id: id } });
+  const user = await User.findOne({ where: { id: id } });
+  await FileService.deleteProfileImage(user.image);
+  await user.destroy();
 };
 
 const passwordResetRequest = async (email) => {
