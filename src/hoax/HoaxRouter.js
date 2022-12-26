@@ -41,4 +41,8 @@ router.get(
   }
 );
 
+router.delete('/api/1.0/hoaxes/:hoaxId', (req, res) => {
+  res.status(403).send();
+});
+
 module.exports = router;
