@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const config = require('config');
-require('pg').defaults.parseInt8 = true;
+// require('pg').defaults.parseInt8 = true; // only for postgresql
 
 const dbConfig = config.get('database');
 
