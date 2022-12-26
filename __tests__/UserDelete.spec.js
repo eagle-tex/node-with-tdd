@@ -6,6 +6,12 @@ const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
 const Token = require('../src/auth/Token');
 const Hoax = require('../src/hoax/Hoax');
+const fs = require('fs');
+const path = require('path');
+const config = require('config');
+
+const { uploadDir, profileDir } = config;
+const profileFolder = path.join('.', uploadDir, profileDir);
 
 beforeEach(async () => {
   // NOTE: because we included `userId` field as a foreignKey in User-Token
@@ -165,5 +171,25 @@ describe('User Delete', () => {
     const hoaxes = await Hoax.findAll();
 
     expect(hoaxes.length).toBe(0);
+  });
+
+  fit('removes profile image when user is deleted', async () => {
+    const user = await addUser();
+    const token = await auth({ auth: credentials });
+    const storedFilename = 'profile-image-for-user1';
+    const testFilePath = path.join(
+      '.',
+      '__tests__',
+      'resources',
+      'test-png.png'
+    );
+    const targetPath = path.join(profileFolder, storedFilename);
+    fs.copyFileSync(testFilePath, targetPath);
+    user.image = storedFilename;
+    await user.save();
+
+    await deleteUser(user.id, { token });
+
+    expect(fs.existsSync(targetPath)).toBe(false);
   });
 });
