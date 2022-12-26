@@ -173,7 +173,7 @@ describe('User Delete', () => {
     expect(hoaxes.length).toBe(0);
   });
 
-  fit('removes profile image when user is deleted', async () => {
+  it('removes profile image when user is deleted', async () => {
     const user = await addUser();
     const token = await auth({ auth: credentials });
     const storedFilename = 'profile-image-for-user1';
