@@ -25,5 +25,6 @@
   "unauthorized_hoax_submit": "Vous n'êtes pas autorisé à poster des hoax",
   "hoax_submit_success": "Le hoax est enregistré",
   "hoax_content_size": "Le hoax doit avoir min 100 et max 5000 caractères",
-  "attachment_size_limit": "Le fichier attaché ne doit pas dépasser 5Mo"
+  "attachment_size_limit": "Le fichier attaché ne doit pas dépasser 5Mo",
+  "unauthorized_hoax_delete": "Vous n'êtes pas authorizé à supprimer le hoax"
 }
