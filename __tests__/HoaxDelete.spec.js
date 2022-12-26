@@ -30,6 +30,14 @@ const addUser = async (user = { ...activeUser }) => {
   return await User.create(user); // return the created user object
 };
 
+const addHoax = async (userId) => {
+  return Hoax.create({
+    content: `Hoax for user ${userId}`,
+    timestamp: Date.now(),
+    userId
+  });
+};
+
 const auth = async (options = {}) => {
   let token; // undefined
   const agent = request(app);
@@ -83,4 +91,21 @@ describe('Delete Hoax', () => {
       expect(response.body.message).toBe(message);
     }
   );
+
+  it("returns 403 when user tries to delete another user's hoax", async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    const user2 = await addUser({
+      ...activeUser,
+      username: 'user2',
+      email: 'user2@mail.com'
+    });
+    const token = await auth({
+      auth: { email: user2.email, password: 'P4ssword' }
+    });
+
+    const response = await deleteHoax(hoax.id, { token });
+
+    expect(response.status).toBe(403);
+  });
 });
