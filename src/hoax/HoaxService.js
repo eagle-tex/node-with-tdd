@@ -64,4 +64,8 @@ const getHoaxes = async (page, size, userId) => {
   };
 };
 
-module.exports = { save, getHoaxes };
+const getHoax = async (hoaxId) => {
+  return await Hoax.findOne({ where: { id: hoaxId } });
+};
+
+module.exports = { save, getHoaxes, getHoax };
