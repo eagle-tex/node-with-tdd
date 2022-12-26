@@ -6,12 +6,14 @@ const en = require('../locales/en/translation.json');
 const fr = require('../locales/fr/translation.json');
 const Token = require('../src/auth/Token');
 const Hoax = require('../src/hoax/Hoax');
+const FileAttachment = require('../src/file/FileAttachment');
 const fs = require('fs');
 const path = require('path');
 const config = require('config');
 
-const { uploadDir, profileDir } = config;
+const { uploadDir, profileDir, attachmentDir } = config;
 const profileFolder = path.join('.', uploadDir, profileDir);
+const attachmentFolder = path.join('.', uploadDir, attachmentDir);
 
 beforeEach(async () => {
   // NOTE: because we included `userId` field as a foreignKey in User-Token
@@ -190,6 +192,40 @@ describe('User Delete', () => {
 
     await deleteUser(user.id, { token });
 
+    expect(fs.existsSync(targetPath)).toBe(false);
+  });
+
+  it('deletes hoax attachment from storage and database when delete user request sent from authorized user', async () => {
+    const savedUser = await addUser();
+    const token = await auth({ auth: credentials });
+    const storedFilename = 'hoax-attachment-for-user1';
+    const testFilePath = path.join(
+      '.',
+      '__tests__',
+      'resources',
+      'test-png.png'
+    );
+    const targetPath = path.join(attachmentFolder, storedFilename);
+    fs.copyFileSync(testFilePath, targetPath);
+
+    const storedAttachment = await FileAttachment.create({
+      filename: storedFilename
+    });
+
+    await request(app)
+      .post('/api/1.0/hoaxes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ content: 'Hoax content', fileAttachment: storedAttachment.id });
+
+    await deleteUser(savedUser.id, {
+      token: token
+    });
+
+    const storedAttachmentAfterDelete = await FileAttachment.findOne({
+      where: { id: storedAttachment.id }
+    });
+
+    expect(storedAttachmentAfterDelete).toBeNull();
     expect(fs.existsSync(targetPath)).toBe(false);
   });
 });
