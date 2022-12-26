@@ -108,4 +108,14 @@ describe('Delete Hoax', () => {
 
     expect(response.status).toBe(403);
   });
+
+  it('returns 200 OK when user deletes their hoax', async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    const token = await auth({ auth: credentials });
+
+    const response = await deleteHoax(hoax.id, { token });
+
+    expect(response.status).toBe(200);
+  });
 });
