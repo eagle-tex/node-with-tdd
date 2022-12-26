@@ -8,12 +8,15 @@ const Hoax = require('../src/hoax/Hoax');
 const FileAttachment = require('../src/file/FileAttachment');
 
 beforeEach(async () => {
-  // NOTE: clear fileAttachments table before the users table
-  await FileAttachment.destroy({ truncate: true });
+  // NOTE: because of the `onDelete: 'cascade'` added in the r/ship between
+  //   Hoax and FileAttachment, it is not necessary to clear the fileAttachments
+  //   table before clearing the users table
+  // await FileAttachment.destroy({ truncate: true }); // DELETE this line
+
   // NOTE: because we included `userId` field as a foreignKey in User-Token
-  // relationship, the `{ truncate: true }` option would not be valid anymore
-  // the database will not allow a `{ truncate: true }`.
-  // we replace that with a `{ truncate: { cascade: true }}`
+  //   relationship, the `{ truncate: true }` option would not be valid anymore
+  //   the database will not allow a `{ truncate: true }`.
+  //   we replace that with a `{ truncate: { cascade: true }}`
   await User.destroy({ truncate: { cascade: true } });
 });
 
