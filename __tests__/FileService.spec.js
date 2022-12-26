@@ -131,27 +131,4 @@ describe('Scheduled Unused File Cleanup', () => {
     expect(attachmentAfterRemove).not.toBeNull();
     expect(fs.existsSync(targetPath)).toBe(true);
   });
-
-  // fit('keeps the files younger than 24 hours and their database entry even if not associated with a hoax', async () => {
-  //   jest.useFakeTimers();
-  //   fs.copyFileSync(testFile, targetPath);
-  //   const uploadDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
-  //   const attachment = await FileAttachment.create({
-  //     filename: filename,
-  //     uploadDate: uploadDate
-  //   });
-  //   await FileService.removeUnusedAttachments();
-
-  //   jest.advanceTimersByTime(24 * 60 * 60 * 1000 + 5 * 1000);
-
-  //   jest.useRealTimers();
-
-  //   const attachmentAfterRemove = await FileAttachment.findOne({
-  //     where: { id: attachment.id }
-  //   });
-
-  //   await new Promise((resolve) => setTimeout(() => resolve(), 1000));
-  //   expect(attachmentAfterRemove).not.toBeNull();
-  //   expect(fs.existsSync(targetPath)).toBe(true);
-  // });
 });
