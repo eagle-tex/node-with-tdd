@@ -67,11 +67,16 @@ const getHoaxes = async (page, size, userId) => {
 
 const deleteHoax = async (hoaxId, userId) => {
   const hoaxToBeDeleted = await Hoax.findOne({
-    where: { id: hoaxId, userId: userId }
+    where: { id: hoaxId, userId: userId },
+    include: { model: FileAttachment }
   });
 
   if (!hoaxToBeDeleted) {
     throw new ForbiddenException('unauthorized_hoax_delete');
+  }
+  const hoaxAsJSON = hoaxToBeDeleted.get({ plain: true });
+  if (hoaxAsJSON.fileAttachment !== null) {
+    await FileService.deleteAttachment(hoaxAsJSON.fileAttachment.filename);
   }
 
   await hoaxToBeDeleted.destroy();
